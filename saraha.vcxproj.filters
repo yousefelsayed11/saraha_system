@@ -53,5 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="users.csv" />
+    <None Include="messages.csv" />
+    <None Include="contacts.csv" />
+    <None Include="blocked_users.csv" />
   </ItemGroup>
 </Project>

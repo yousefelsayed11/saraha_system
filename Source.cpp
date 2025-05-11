@@ -387,6 +387,268 @@ void loadAllData() {
         messages.setSentMessages(loadedMessages);
     }
 }
+void nextPage(int tempId)
+{
+    Sleep(100);
+    system("cls");
+       
+    User& currentUser = users[tempId];
+    int ID;
+    string choice;
+    showUserMenu();
+    cin >> choice;
+    cin.ignore();
+    vector<User*> allUsers;
+    for (auto it = users.begin(); it != users.end(); ++it) {
+        allUsers.push_back(&(it->second));
+    }
+
+
+    if (choice == "1") {
+        currentUser.displayUser();
+        cout << "\nPress Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+    else if (choice == "2") {
+
+        string receiverUsername, content;
+        cout << "Enter receiver's username: ";
+        getline(cin, receiverUsername);
+
+        if (messages.is_username_regiter(receiverUsername, allUsers)) {
+            cout << "Enter your message: ";
+            getline(cin, content);
+
+            string senderUsername = currentUser.getName();
+            int senderid = currentUser.getId();
+            messages.sendMessage(senderUsername, senderid, receiverUsername, content, messages.registeredUsernames, allUsers);
+        }
+        else
+        {
+            cout << "This username isn't registered.\n";
+        }
+        cout << "Press Enter to return to menu...\n";
+        cin.get();
+        nextPage(tempId);
+
+    }
+
+
+    else if (choice == "3") {
+        messages.undoLastSentMessage();
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+
+    else if (choice == "4") {
+        string senderUsername = currentUser.getName();
+       const vector<Message>& allSent = messages.getSentMessages();
+        vector< Message> userSentMsgs;
+
+        cout << "\nYour sent messages:\n";
+        int index = 1;
+        for (auto& msg : allSent) {
+            if (msg.getSenderUsername() == senderUsername) {
+                cout << index << ". To " << msg.getReceiverUsername()
+                    << " | " << msg.getContent() << "\n";
+                userSentMsgs.push_back(msg);
+                ++index;
+            }
+        }
+
+        if (userSentMsgs.empty()) {
+            cout << "You haven't sent any messages yet.\n";
+        }
+        else {
+            int choice;
+            cout << "\nEnter the number of the message to add to favorites (or 0 to skip): ";
+            cin >> choice;
+            cin.ignore();
+
+            if (choice > 0 && choice <= userSentMsgs.size()) {
+                favorites.addToFavorites(userSentMsgs[choice - 1]);
+            }
+            else {
+                cout << "No message added to favorites.\n";
+            }
+        }
+
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+
+    else if (choice == "5") {
+        string currentUsername = currentUser.getName();
+        auto it = messages.getReceivedMessages().find(currentUsername);
+
+        if (it != messages.getReceivedMessages().end() && !it->second.empty()) {
+            vector<Message>& msgs = it->second;
+            vector< Message*> userReceivedMsgs;
+
+            cout << "\nYour received messages:\n";
+            int index = 1;
+            for (auto& msg : msgs) {
+                cout << index << " | " << msg.getContent() << "\n";
+                userReceivedMsgs.push_back(&msg);
+                ++index;
+            }
+
+            int choice;
+            cout << "\nEnter the number of the message to add to favorites (or 0 to skip): ";
+            cin >> choice;
+            cin.ignore();
+
+            if (choice > 0 && choice <= userReceivedMsgs.size()) {
+                favorites.addToFavorites(*userReceivedMsgs[choice - 1]);
+            }
+            else {
+                cout << "No message added to favorites.\n";
+            }
+        }
+        else {
+            cout << "You have not received any messages.\n";
+        }
+
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+
+    else if (choice == "6") {
+        int senderid;
+        cout << "Enter sender id  to view received messages from: ";
+        cin >> senderid;
+
+        string currentUsername = currentUser.getName();
+        messages.viewReceivedMessageFrom(senderid, currentUsername);
+
+        cout << "Press Enter to return to menu...";
+
+        cin.ignore();
+        cin.get();
+        nextPage(tempId);
+    }
+
+    else if (choice == "7") {
+        favorites.removeOldestFavorite();
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+
+
+    else if (choice == "8") {
+        favorites.viewAllFavorites();
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+    }
+    else if (choice == "9") {
+        currentUser.view_contact();
+        if (!currentUser.getContacts().empty())
+        {
+
+            cout << "enter the id want to remove him\n ";
+            cin >> ID;
+
+            if (currentUser.contactExists(ID))
+            {
+                currentUser.removeContact(ID);
+
+
+            }
+            cin.ignore();
+        }
+        cout << "Press Enter to return to menu...";
+
+        cin.get();
+        nextPage(tempId);
+
+    }
+    else if (choice == "10") {
+
+        cout << " enter the contact is to want to search \n";
+        cin >> ID;
+        if (currentUser.contactExists(ID))
+        {
+            cout << "Contact with ID " << ID << " exists in your contact list." << endl;
+        }
+        else
+            cout << "Contact with ID " << ID << " was not found in your contact list." << endl;
+        cout << "Press Enter to return to menu...";
+        cin.ignore();
+        cin.get();
+        nextPage(tempId);
+
+    }
+    else if (choice == "11") {
+        currentUser.view_contact();
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+
+    }
+    else if (choice == "12") {
+
+        cout << "enter the id want to blocked him \n";
+        cin >> ID;
+        if (!currentUser.is_id_register(ID, allUsers))
+        {
+            cout << "This id isn't registered.\n";
+        }
+        else
+        {
+            currentUser.doB_User(ID);
+
+        }
+
+        cout << "Press Enter to return to menu...";
+        cin.ignore();
+        cin.get();
+        nextPage(tempId);
+
+    }
+    else if (choice == "13") {
+        currentUser.view_user_is_blocked();
+        if (!currentUser.getblockUser().empty())
+        {
+
+            cout << "enter the id want to unblocked him\n ";
+            cin >> ID;
+            currentUser.unBlock(ID);
+            cin.ignore();
+        }
+
+        cout << "Press Enter to return to menu...";
+
+        cin.get();
+        nextPage(tempId);
+
+    }
+    else if (choice == "14") {
+        currentUser.view_user_is_blocked();
+        cout << "Press Enter to return to menu...";
+        cin.get();
+        nextPage(tempId);
+
+
+    }
+
+    else if (choice == "15") {
+        cout << "Logging out...\n";
+        return;
+
+    }
+
+    else {
+
+        cout << "Invalid choice. Try again.\n";
+        nextPage(tempId);
+    }
+}
 
 // Main function
 int main() {
@@ -404,28 +666,8 @@ int main() {
             registerUser();
         }
         else if (choice == "2") {
-            if (loginUser()) {
-                // User menu loop
-                while (currentId != 0) {
-                    showUserMenu();
-                    cout << "Enter choice: ";
-                    getline(cin, choice);
-
-                    if (choice == "1") {
-                        // Profile
-                        users[currentId].displayUser();
-                        cout << "\nPress Enter to continue...";
-                       // cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    }
-                    else if (choice == "15") {
-                        currentId = 0; // Log out
-                    }
-                    else {
-                        // Handle other menu options...
-                        typewriterEffect("Feature not yet implemented", COLOR_ERROR);
-                        sleep(1000);
-                    }
-                }
+            if (loginUser()) {                
+               nextPage(currentId);
             }
         }
         else if (choice == "3") {
