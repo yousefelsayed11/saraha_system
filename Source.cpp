@@ -436,7 +436,7 @@ void nextPage(int tempId)
 
 
     else if (choice == "3") {
-        messages.undoLastSentMessage();
+        messages.undoLastSentMessage(currentUser.getName());
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -533,7 +533,7 @@ void nextPage(int tempId)
     }
 
     else if (choice == "7") {
-        favorites.removeOldestFavorite();
+        users[tempId].getFavorites().removeOldestFavorite();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -541,7 +541,7 @@ void nextPage(int tempId)
 
 
     else if (choice == "8") {
-        favorites.viewAllFavorites();
+        users[tempId].getFavorites().viewAllFavorites();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);

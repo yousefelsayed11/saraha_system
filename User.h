@@ -7,6 +7,7 @@
 #include <windows.h>
 #include "Message.h"
 #include <stack>
+#include"Favorites.h"
 using namespace std;
 class User {
 private:
@@ -17,6 +18,7 @@ private:
     string gender;
     string name;
     int id;
+    Favorites favorites;
     vector<int >blockUser;
 public:
      map<int, int> senderMessageCount;
@@ -36,6 +38,10 @@ public:
     const vector<Contacts>& getContacts()const ;
    const vector<int>& getblockUser() const;
     const pair<string, string>& getAccount()const;
+    Favorites& getFavorites() {
+        return favorites;
+    }
+
     //more 
     void displayUser() const;
     bool login(const string& email, const string& password) const;

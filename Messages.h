@@ -20,7 +20,7 @@ public:
 
    
     void sendMessage(string& senderUsername, int sendrid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers);
-    bool undoLastSentMessage();
+    bool undoLastSentMessage(const string& currentUsername);
     bool is_username_regiter(string username, vector<User*>& allUsers);
 
 
