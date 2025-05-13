@@ -50,5 +50,15 @@
     <ClInclude Include="User.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="users.csv" />
+    <None Include="messages.csv" />
+    <None Include="contacts.csv" />
+    <None Include="blocked_users.csv" />
+    <None Include="favorites.csv" />
   </ItemGroup>
 </Project>

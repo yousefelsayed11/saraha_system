@@ -17,13 +17,49 @@ User::User(string name, pair<string, string> account, string gender, int id) {
     this->gender = gender;
     this->id = id;
 }
+
+// change password
+void User::changePassword()
+{
+    string password, confirmPassword;
+    cout << "Enter the last password: ";
+    getline(cin, password);
+   
+    if (hashPassword(password) != this->account.second)
+    {
+        cout << "the last password is inCorrect so try again\n";
+        changePassword();
+    }
+
+    cout << "Enter New Password: ";
+    getline(cin, password);
+
+    if (!isStrongPassword(password)) {
+        cout << "Weak password. Must be at least 8 characters." << el;
+        changePassword();
+    }
+
+    cout << "Re-enter New Password: ";
+    getline(cin, confirmPassword);
+
+    if (password != confirmPassword) {
+        cout << "Passwords do not match." << el;
+        changePassword();
+
+    }
+    this->account.second = hashPassword( password);
+    cout << "The password has been changed successfully." << el;
+
+}
 // placeholder
 void User::setAccount(pair<string, string> accountPair) {
     account.first = accountPair.first;
     account.second = accountPair.second;
 }
+
 void User::setGender(string g) {
-    if (g == "M" || g == "m")
+    g= toupper(g[0]);
+    if (g == "M")
         gender = "Male";
     else
         gender = "Female";
@@ -34,34 +70,41 @@ void User::setName(string n) {
 void User::setId(int i) {
     id = i;
 }
-int User::getId()
+int User::getId()const
 {
     return id;
 }
-string User::getName() {
+
+string User::getGender()const
+{
+    return gender;
+}
+string User::getName()const {
     return name;
 }
 void User::setContacts(vector<Contacts>& newContacts)
 {
     contacts = newContacts;
 }
-vector<Contacts>& User::getContacts()
+ const vector<Contacts>& User::getContacts()const
 {
     return contacts;
 }
-void User::setblockUser(vector<int> newblockUser)
+void User::setblockUser(int  newblockUser)
 {
-    blockUser = newblockUser;
+    blockUser.push_back(newblockUser);
 }
-vector<int>& User::getblockUser()
+const vector<int>& User::getblockUser()const
 {
     return blockUser;
 }
-pair<string, string>& User::getAccount() {
+const pair<string, string>& User::getAccount() const
+{
     return account;
 }
 
-void User::displayUser() const {
+
+void User::displayUser()  {
     Sleep(100);
     system("cls");
     cout << "<-------------- my_Profile" << el;
@@ -70,6 +113,13 @@ void User::displayUser() const {
     cout << "User ID: " << id << el;
     for (const auto& c : contacts)
         cout << "Contact ID: " << c.id<< el;
+    cout << "press ( y ) if you want change password\n";
+    string x;
+    getline(cin, x);
+    if (x == "y") changePassword();
+
+
+
 }
 
 bool User::login(const string& email, const string& password) const {
@@ -149,6 +199,14 @@ bool User::contactExists(int contactID)
     return false;
 }
 
+//bool User::isblock(string name)
+//{
+//    for (auto found : blockUser)
+//        if (found == na)
+//            return true;
+//    return false;
+//}
+
 bool User::isblock(int ID)
 {
     for (auto found : blockUser)
@@ -207,7 +265,17 @@ void User::view_user_is_blocked()
     
 }
 
+Favorites& User::getFavorites()
+{
+    return favorites;
+}
 
+
+
+const Favorites& User::getFavorites()const
+{
+    return favorites;
+}
 
 bool isStrongPassword(const string& password) {
     if (password.length() < 8) return false;

@@ -7,6 +7,8 @@
 #include <windows.h>
 #include "Message.h"
 #include <stack>
+#include "Favorites.h"
+
 using namespace std;
 class User {
 private:
@@ -18,34 +20,43 @@ private:
     string name;
     int id;
     vector<int >blockUser;
+    Favorites favorites;
+
 public:
      map<int, int> senderMessageCount;
     User() = default;
     User(std::string name, std::pair<std::string, std::string> credentials, std::string gender, int id);
+    // Setter
+   
+    void changePassword();
     void setAccount(pair<string, string> accountPair);
     void setGender(string g);
     void setName(string n);
     void setId(int i);
-    int getId();
-    string getName();
     void setContacts(vector<Contacts>& newContacts);
-    vector<Contacts>& getContacts();
-    void setblockUser(vector<int >newblockUser);
-    vector<int>& getblockUser();
-
-  
-    pair<string, string>& getAccount();
-    void displayUser() const;
+    void setblockUser(int newblockUser);
+    //getter
+    int getId()const;
+    string getGender()const;
+    string getName()const;
+    const vector<Contacts>& getContacts()const ;
+   const vector<int>& getblockUser() const;
+    const pair<string, string>& getAccount()const;
+    //more 
+    void displayUser() ;
     bool login(const string& email, const string& password) const;
     bool is_id_register(int id, vector<User*>& allUsers);              
     void addContact(int contactID);
     void removeContact(int contactID);
     void view_contact();
     bool contactExists(int contactID);
+    //bool isblock(string name);
     bool isblock(int id);
     void doB_User(int id);
     void unBlock(int id);
     void view_user_is_blocked();
+    Favorites& getFavorites(); 
+    const Favorites& getFavorites() const; 
 
 
 };
@@ -54,3 +65,4 @@ string hashPassword(const string& password);
 bool isEmailValid(const string& email);
 void type(string text);
 void setColor(int color);
+

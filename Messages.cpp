@@ -28,28 +28,61 @@ void Messages::sendMessage(string& senderUsername,int senderid, string& receiver
     cout << "Message sent successfully!\n";
     
 }
-bool Messages::undoLastSentMessage() {
-    if (!undoStack.empty()) {
+bool Messages::undoLastSentMessage(const string& currentUsername) {
+    stack<Message> tempStack;
+    bool found = false;
+
+    // Search for the most recent message by current user
+    while (!undoStack.empty()) {
         Message last = undoStack.top();
         undoStack.pop();
 
-        if (!sentMessages.empty() && sentMessages.back().getContent() == last.getContent()) {
-            sentMessages.pop_back();
-        }
+        if (last.getSenderUsername() == currentUsername && !found) {
+            // Remove from sentMessages
+            for (auto it = sentMessages.rbegin(); it != sentMessages.rend(); ++it) {
+                if (it->getSenderUsername() == last.getSenderUsername() &&
+                    it->getReceiverUsername() == last.getReceiverUsername() &&
+                    it->getContent() == last.getContent() &&
+                    it->getTimestamp() == last.getTimestamp()) {
+                    sentMessages.erase(next(it).base());
+                    break;
+                }
+            }
 
-        auto& msgs = receivedMessages[last.getReceiverUsername()];
-        if (!msgs.empty() && msgs.back().getContent() == last.getContent()) {
-            msgs.pop_back();
-        }
+            // Remove from receivedMessages
+            auto& msgs = receivedMessages[last.getReceiverUsername()];
+            for (auto it = msgs.rbegin(); it != msgs.rend(); ++it) {
+                if (it->getSenderUsername() == last.getSenderUsername() &&
+                    it->getContent() == last.getContent() &&
+                    it->getTimestamp() == last.getTimestamp()) {
+                    msgs.erase(next(it).base());
+                    break;
+                }
+            }
 
-        cout << "Last sent message undone.\n";
-        return true;
+            found = true;
+            cout << "Last message by " << currentUsername << " undone.\n";
+            break;
+        }
+        else {
+            tempStack.push(last); // store other users' messages temporarily
+        }
     }
-    else {
-        cout << "No sent message to undo.\n";
+
+    // Restore the rest of the undo stack
+    while (!tempStack.empty()) {
+        undoStack.push(tempStack.top());
+        tempStack.pop();
+    }
+
+    if (!found) {
+        cout << "No sent message to undo for " << currentUsername << ".\n";
         return false;
     }
+
+    return true;
 }
+
 
 bool Messages::is_username_regiter(string username, vector<User*>& allUsers)
 {
@@ -95,16 +128,18 @@ void Messages::viewSentMessages(string& currentUsername) {
     }
 }
 
+
+
 void Messages::viewReceivedMessageFrom(int senderId, string& receiverUsername) {
     auto it = receivedMessages.find(receiverUsername);
     if (it != receivedMessages.end()) {
         vector<Message>& msgs = it->second;
         bool found = false;
         for (Message& msg : msgs) {
-            if (msg.senderId == senderId) {
+            if (msg.getSenderId() == senderId) {
                 cout << "From: " << senderId << "\n";
                 cout << "Message: " << msg.getContent() << "\n";
-                cout << "Date: " << msg.date << "\n\n";
+                cout << "Date: " << msg.getDate() << "\n\n";
                 found = true;
             }
         }
@@ -115,6 +150,12 @@ void Messages::viewReceivedMessageFrom(int senderId, string& receiverUsername) {
         cout << "No messages received by " << receiverUsername << ".\n";
     }
 }
+
+void Messages::setSentMessages(vector<Message> msg)
+{
+    this->sentMessages = msg;
+}
+
 
 void Messages::viewMyReceivedMessages(string& myUsername) {
     auto it = receivedMessages.find(myUsername);
@@ -135,7 +176,7 @@ void Messages::viewMyReceivedMessages(string& myUsername) {
     }
 }
 
-vector<Message>& Messages::getSentMessages() {
+const vector<Message>& Messages::getSentMessages()const {
     return sentMessages;
 }
 

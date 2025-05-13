@@ -34,3 +34,14 @@ void Favorites::viewAllFavorites() {
     }
     cout << "------------------------------\n";
 }
+
+const std::deque<Message>& Favorites::getFavoriteMessages() const
+{
+    return favoriteMessages;
+    // TODO: insert return statement here
+}
+
+void Favorites::setFavoriteMessages(deque<Message> mg)
+{
+    this->favoriteMessages = mg;
+}
