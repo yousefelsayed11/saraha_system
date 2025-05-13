@@ -1,202 +1,212 @@
-﻿#include <iostream>
-#include <string>
-#include <algorithm>
-#include <cmath>
-#include <vector>
-#include <deque>
-#include <queue>
-#include <set>
-#include <stack>
-#include <map>
-#include <sstream>
-#include <unordered_map>
-#include <windows.h>
-#include "User.h"
+﻿#include<iostream>
+#include<string>
+#include<algorithm>
+#include<cmath>
+#include<vector>
+#include<deque>
+#include<queue>
+#include<set>
+#include<stack>
+#include<map>
+#include<unordered_map>
+#include <windows.h>'
+#include"User.h"
 #include "Messages.h"
 #include "Message.h"
 #include "Favorites.h"
 #include <iomanip>
-#include <fstream>
-#include <limits>
-
+#include<iostream>
 using namespace std;
-
-// Constants
-const int COLOR_SUCCESS = 10;
-const int COLOR_ERROR = 12;
-const int COLOR_DEFAULT = 7;
-const int MAX_LOGIN_ATTEMPTS = 5;
-
-// Global variables
 Favorites favorites;
-Messages messages;
-unordered_map<int, User> users;
+
+#define ll long long
+#define Youssef ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define mod 1000000007 
+#define el "\n"
+using namespace std;
 int currentId = 0;
-int nextUserId = 1;
-
-// Helper functions
-//void setColor(int color) {
-//    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-//}
-
-void clearScreen() {
-    system("cls");
+/**************************************************************************************/
+#define int long long
+void setColor(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
 }
 
-void sleep(int ms) {
-    Sleep(ms);
+bool isPalindrome(string s) {
+    string reversed = string(s.rbegin(), s.rend());
+    return s == reversed;
 }
 
-void typewriterEffect(const string& text, int color = COLOR_DEFAULT) {
-    setColor(color);
-    for (char c : text) {
-        cout << c << flush;
-        sleep(50);
-    }
-    setColor(COLOR_DEFAULT);
-    cout << endl;
-}
-
-bool isEmailUnique(const string& email) {
-    for (const auto& pair : users) {
-        if (pair.second.getAccount().first == email) {
+bool checkEmailUnique(string email, unordered_map<int, User>& users) {             // that is check if the account is Already Exit
+    for (auto& p : users) {
+        int id = p.first;
+        User& acc = p.second;
+        if (acc.getAccount().first == email) {
             return false;
         }
     }
     return true;
 }
 
-// Core functions
-User registerUser() {
-    clearScreen();
+User registerUser(int id, unordered_map<int, User>& users) {
+    Sleep(100);
+    system("cls");
     User newUser;
-    string username, email, password, confirmPassword, gender;
-
-    cout << "<--------------- Registration Page\n";
-
-    // Get username
+    string username, email, password, confirmPassword;
+    cout << "<---------------registration page\n";
     cout << "Enter your username: ";
     getline(cin, username);
     newUser.setName(username);
 
-    // Get email
     while (true) {
-        cout << "Enter email: ";
-        getline(cin, email);
+        // Password
 
-        if (!isEmailValid(email)) {
-            typewriterEffect("Invalid email format.", COLOR_ERROR);
-            continue;
-        }
-
-        if (!isEmailUnique(email)) {
-            typewriterEffect("This email is already registered.", COLOR_ERROR);
-            continue;
-        }
-        break;
-    }
-
-    // Get password
-    while (true) {
-        cout << "Enter password: ";
-        getline(cin, password);
-
-        if (!isStrongPassword(password)) {
-            typewriterEffect("Weak password. Must be at least 8 characters.", COLOR_ERROR);
-            continue;
-        }
-
-        cout << "Re-enter password: ";
-        getline(cin, confirmPassword);
-
-        if (password != confirmPassword) {
-            typewriterEffect("Passwords do not match.", COLOR_ERROR);
-            continue;
-        }
-        break;
-    }
-
-    // Get gender
-    while (true) {
-        cout << "Enter gender (M/F): ";
-        getline(cin, gender);
-
-        if (gender.size() == 1 && (toupper(gender[0]) == 'M' || toupper(gender[0]) == 'F')) {
-            newUser.setGender(string(1, gender[0]));
+        // Email
+        while (true) {
+            cout << "Enter email: ";
+            cin >> email;
+            if (!isEmailValid(email)) {
+                cout << "Invalid email format.\n";
+                continue;
+            }
             break;
         }
-        typewriterEffect("Invalid input. Only M or F allowed.", COLOR_ERROR);
+
+        while (true) {
+            cout << "Enter password: ";
+            cin >> password;
+            if (!isStrongPassword(password)) {
+                cout << "Weak password. Must be at least 8 characters.\n";
+                continue;
+            }
+
+            cout << "Re-enter password: ";
+            cin >> confirmPassword;
+            if (password != confirmPassword) {
+                cout << "Passwords do not match. Try again.\n";
+                continue;
+            }
+            break;
+        }
+        if (!checkEmailUnique(email, users)) {
+            cout << "This account already exists.\n";
+        }
+        else {
+            newUser.setAccount({ email, hashPassword(password) });
+            break;
+        }
     }
 
-    // Finalize user
-    newUser.setAccount({ email, hashPassword(password) });
-    newUser.setId(nextUserId);
-    users[nextUserId] = newUser;
-    currentId = nextUserId;
-    nextUserId++;
+    string g;
+    while (true) {
+        cin.ignore();
+        cout << "Enter gender (M/F): ";
+        cin >> g;
+        if (g == "M" || g == "F" || g == "m" || g == "f") { newUser.setGender(g); break; }
+        cout << "Invalid input. Only M or F allowed.\n";
+    }
 
-    typewriterEffect("Account created successfully!", COLOR_SUCCESS);
-    sleep(500);
+    newUser.setGender(g);
+    newUser.setId(id);
+    setColor(10);
+    string text = "Your account created successfully";
+    for (int i = 0; i < text.size(); i++) {
+        cout << text[i];
+        Sleep(100);
+    }
+    setColor(7);
+    cout << el;
 
     return newUser;
 }
 
-bool loginUser() {
-    clearScreen();
-    cout << "  ------------------> Login Page\n";
-
-    int attempts = 0;
-    while (attempts < MAX_LOGIN_ATTEMPTS) {
-        string email, password;
-
-        // Get email
+bool loginUser(unordered_map<int, User>& users) {
+    string email, password;
+    Sleep(100);
+    system("cls");
+    cout << "  ------------------>      Login page\n";
+    while (true) {
         cout << "Enter email: ";
         getline(cin, email);
-
+        // cin.ignore();
         if (!isEmailValid(email)) {
-            typewriterEffect("Invalid email format.", COLOR_ERROR);
-            attempts++;
+            cout << "Invalid email format.\n";
             continue;
         }
-
-        // Get password
-        cout << "Password: ";
-        getline(cin, password);
-
-        // Check credentials
-        for (auto& pair : users) {
-            if (pair.second.login(email, password)) {
-                typewriterEffect("Login successful!", COLOR_SUCCESS);
-                sleep(300);
-                currentId = pair.first;
-                return true;
-            }
-        }
-
-        attempts++;
-        if (attempts < MAX_LOGIN_ATTEMPTS) {
-            typewriterEffect("Incorrect email or password. Attempts remaining: " +
-                to_string(MAX_LOGIN_ATTEMPTS - attempts), COLOR_ERROR);
-        }
+        break;
     }
 
-    typewriterEffect("Maximum login attempts reached.", COLOR_ERROR);
+    cout << "Password: ";
+    getline(cin, password);
+
+    for (auto& u : users) {
+
+        const User& acc = u.second;
+        if (acc.login(email, password)) {
+            //setColor(2);
+            string text = "Login successful.!";
+            for (int i = 0; i < text.size(); i++) {
+                cout << text[i];
+                Sleep(100);
+            }
+            Sleep(300);
+            system("cls");
+            currentId = u.first;
+            return true;
+        }
+    }
+    setColor(10);
+    string text = "Incorrect email or password.!";
+    for (int i = 0; i < text.size(); i++) {
+        cout << text[i];
+        Sleep(100);
+    }
+    setColor(7);
+    cout << el;
+    while (true) {
+        cout << "do you want try again  (Y,N)" << el;
+        char choice; cin >> choice;
+        choice = toupper(choice);
+        if (choice == 'Y' || choice == 'N')
+            if (choice == 'Y') {
+                cin.ignore();
+                loginUser(users);
+            }
+            else if (choice == 'N')
+                return false;
+            else
+                cout << "Invalid choice" << el;
+
+    }
     return false;
 }
 
-// Menu functions
-void showMainMenu() {
-    clearScreen();
+void showMenu() {
+    Sleep(100);
+    system("cls");
     cout << "\n===== Modified-Saraha =====\n";
     cout << "1. Register\n";
     cout << "2. Login\n";
     cout << "3. Exit\n";
     cout << "===========================\n";
 }
+int id = 0;
 
-void showUserMenu() {
-    clearScreen();
-    cout << "\n===== User Menu =====\n";
+unordered_map<int, User> users;
+void nextPage(int tempId)
+{
+
+    Sleep(100);
+    system("cls");
+
+    static Messages messages; // Ensure persistence
+    User& currentUser = users[tempId];
+    int ID;
+    string choice;
     cout << "1. Profile\n";
     cout << "2. Send Message\n";
     cout << "3. Undo Last Sent Message\n";
@@ -205,197 +215,15 @@ void showUserMenu() {
     cout << "6. View Received Messages From Specific Contact\n";
     cout << "7. Remove Oldest Favorite Message\n";
     cout << "8. View Favorite Messages\n";
-    cout << "9. Remove Contacts\n";
-    cout << "10. Search Contacts\n";
-    cout << "11. View Contacts List\n";
-    cout << "12. Block User\n";
-    cout << "13. Unblock User\n";
-    cout << "14. View Blocked Users List\n";
+    cout << "9. remove contacts\n";
+    cout << "10.search about contact\n";
+    cout << "11. view contacts Users List \n";
+    cout << "12. block user \n";
+    cout << "13. unblock user\n";
+    cout << "14. view Blocked Users List\n";
     cout << "15. Log Out\n";
     cout << "===========================\n";
-}
 
-// Data persistence
-void saveAllData() {
-    // Save users
-    ofstream userFile("users.csv");
-    if (userFile) {
-        userFile << "ID,Name,Gender,Email,Password\n";
-        for (const auto& pair : users) {
-            const User& user = pair.second;
-            auto acc = user.getAccount();
-            userFile << user.getId() << ","
-                << user.getName() << ","
-                << user.getGender() << ","
-                << acc.first << ","
-                << acc.second << "\n";
-        }
-    }
-
-    // Save contacts
-    ofstream contactFile("contacts.csv");
-    if (contactFile) {
-        contactFile << "UserID,ContactID\n";
-        for (const auto& pair : users) {
-            for (const auto& contact : pair.second.getContacts()) {
-                contactFile << pair.first << "," << contact.id << "\n";
-            }
-        }
-    }
-
-    // Save blocked users
-    ofstream blockFile("blocked_users.csv");
-    if (blockFile) {
-        blockFile << "UserID,BlockedID\n";
-        for (const auto& pair : users) {
-            for (const auto& bid : pair.second.getblockUser()) {
-                blockFile << pair.first << "," << bid << "\n";
-            }
-        }
-    }
-
-    // Save messages
-    ofstream messageFile("messages.csv");
-    if (messageFile) {
-        messageFile << "SenderID,SenderUsername,ReceiverUsername,Content,Timestamp\n";
-        for (const Message& msg : messages.getSentMessages()) {
-            messageFile << msg.getSenderId() << ","
-                << msg.getSenderUsername() << ","
-                << msg.getReceiverUsername() << ","
-                << msg.getContent() << ","
-                << msg.getTimestamp() << "\n";
-        }
-    }
-}
-
-void loadAllData() {
-    // Load users
-    ifstream userFile("users.csv");
-    if (userFile) {
-        string line;
-        getline(userFile, line); // Skip header
-
-        while (getline(userFile, line)) {
-            stringstream ss(line);
-            string idStr, name, gender, email, password;
-
-            if (getline(ss, idStr, ',') &&
-                getline(ss, name, ',') &&
-                getline(ss, gender, ',') &&
-                getline(ss, email, ',') &&
-                getline(ss, password)) {
-
-                try {
-                    int id = stoi(idStr);
-                    User user;
-                    user.setId(id);
-                    user.setName(name);
-                    user.setGender(string(1, gender[0]));
-                    user.setAccount({ email, password });
-                    users[id] = user;
-
-                    if (id >= nextUserId) {
-                        nextUserId = id + 1;
-                    }
-                }
-                catch (...) {
-                    continue;
-                }
-            }
-        }
-    }
-
-    // Load contacts
-    ifstream contactFile("contacts.csv");
-    if (contactFile) {
-        string line;
-        getline(contactFile, line); // Skip header
-
-        while (getline(contactFile, line)) {
-            stringstream ss(line);
-            string uidStr, cidStr;
-
-            if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',')) {
-                try {
-                    int uid = stoi(uidStr);
-                    int cid = stoi(cidStr);
-
-                    if (users.count(uid) && users.count(cid)) {
-                        users[uid].addContact(cid);
-                    }
-                }
-                catch (...) {
-                    continue;
-                }
-            }
-        }
-    }
-
-    // Load blocked users
-    ifstream blockFile("blocked_users.csv");
-    if (blockFile) {
-        string line;
-        getline(blockFile, line); // Skip header
-
-        while (getline(blockFile, line)) {
-            stringstream ss(line);
-            string uidStr, bidStr;
-
-            if (getline(ss, uidStr, ',') && getline(ss, bidStr, ',')) {
-                try {
-                    int uid = stoi(uidStr);
-                    int bid = stoi(bidStr);
-
-                    if (users.count(uid)) {
-                        users[uid].setblockUser(bid);
-                    }
-                }
-                catch (...) {
-                    continue;
-                }
-            }
-        }
-    }
-
-    // Load messages
-    ifstream messageFile("messages.csv");
-    if (messageFile) {
-        string line;
-        getline(messageFile, line); // Skip header
-
-        vector<Message> loadedMessages;
-        while (getline(messageFile, line)) {
-            stringstream ss(line);
-            string senderIdStr, senderUsername, receiverUsername, content, timestampStr;
-
-            if (getline(ss, senderIdStr, ',') &&
-                getline(ss, senderUsername, ',') &&
-                getline(ss, receiverUsername, ',') &&
-                getline(ss, content, ',') &&
-                getline(ss, timestampStr)) {
-
-                try {
-                    int senderId = stoi(senderIdStr);
-                    Message msg(senderUsername, senderId, receiverUsername, content);
-                    loadedMessages.push_back(msg);
-                }
-                catch (...) {
-                    continue;
-                }
-            }
-        }
-        messages.setSentMessages(loadedMessages);
-    }
-}
-void nextPage(int tempId)
-{
-    Sleep(100);
-    system("cls");
-       
-    User& currentUser = users[tempId];
-    int ID;
-    string choice;
-    showUserMenu();
     cin >> choice;
     cin.ignore();
     vector<User*> allUsers;
@@ -411,7 +239,7 @@ void nextPage(int tempId)
         nextPage(tempId);
     }
     else if (choice == "2") {
-
+        
         string receiverUsername, content;
         cout << "Enter receiver's username: ";
         getline(cin, receiverUsername);
@@ -427,16 +255,16 @@ void nextPage(int tempId)
         else
         {
             cout << "This username isn't registered.\n";
-        }
-        cout << "Press Enter to return to menu...\n";
-        cin.get();
-        nextPage(tempId);
-
+        }   
+            cout << "Press Enter to return to menu...\n";
+            cin.get();
+            nextPage(tempId);
+        
     }
 
 
     else if (choice == "3") {
-        messages.undoLastSentMessage(currentUser.getName());
+        messages.undoLastSentMessage();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -444,8 +272,8 @@ void nextPage(int tempId)
 
     else if (choice == "4") {
         string senderUsername = currentUser.getName();
-       const vector<Message>& allSent = messages.getSentMessages();
-        vector< Message> userSentMsgs;
+        vector<Message>& allSent = messages.getSentMessages();
+        vector< Message*> userSentMsgs;
 
         cout << "\nYour sent messages:\n";
         int index = 1;
@@ -453,7 +281,7 @@ void nextPage(int tempId)
             if (msg.getSenderUsername() == senderUsername) {
                 cout << index << ". To " << msg.getReceiverUsername()
                     << " | " << msg.getContent() << "\n";
-                userSentMsgs.push_back(msg);
+                userSentMsgs.push_back(&msg);
                 ++index;
             }
         }
@@ -468,7 +296,7 @@ void nextPage(int tempId)
             cin.ignore();
 
             if (choice > 0 && choice <= userSentMsgs.size()) {
-                favorites.addToFavorites(userSentMsgs[choice - 1]);
+                favorites.addToFavorites(*userSentMsgs[choice - 1]);
             }
             else {
                 cout << "No message added to favorites.\n";
@@ -524,16 +352,16 @@ void nextPage(int tempId)
 
         string currentUsername = currentUser.getName();
         messages.viewReceivedMessageFrom(senderid, currentUsername);
-
+       
         cout << "Press Enter to return to menu...";
-
+       
         cin.ignore();
         cin.get();
         nextPage(tempId);
     }
 
     else if (choice == "7") {
-        users[tempId].getFavorites().removeOldestFavorite();
+        favorites.removeOldestFavorite();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -541,7 +369,7 @@ void nextPage(int tempId)
 
 
     else if (choice == "8") {
-        users[tempId].getFavorites().viewAllFavorites();
+        favorites.viewAllFavorites();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -550,7 +378,7 @@ void nextPage(int tempId)
         currentUser.view_contact();
         if (!currentUser.getContacts().empty())
         {
-
+            
             cout << "enter the id want to remove him\n ";
             cin >> ID;
 
@@ -563,13 +391,13 @@ void nextPage(int tempId)
             cin.ignore();
         }
         cout << "Press Enter to return to menu...";
-
+       
         cin.get();
         nextPage(tempId);
-
+       
     }
     else if (choice == "10") {
-
+        
         cout << " enter the contact is to want to search \n";
         cin >> ID;
         if (currentUser.contactExists(ID))
@@ -590,9 +418,9 @@ void nextPage(int tempId)
         cin.get();
         nextPage(tempId);
 
-    }
+   }
     else if (choice == "12") {
-
+        
         cout << "enter the id want to blocked him \n";
         cin >> ID;
         if (!currentUser.is_id_register(ID, allUsers))
@@ -602,7 +430,7 @@ void nextPage(int tempId)
         else
         {
             currentUser.doB_User(ID);
-
+           
         }
 
         cout << "Press Enter to return to menu...";
@@ -610,25 +438,25 @@ void nextPage(int tempId)
         cin.get();
         nextPage(tempId);
 
-    }
+    }   
     else if (choice == "13") {
         currentUser.view_user_is_blocked();
         if (!currentUser.getblockUser().empty())
         {
-
+            
             cout << "enter the id want to unblocked him\n ";
             cin >> ID;
             currentUser.unBlock(ID);
             cin.ignore();
         }
-
+       
         cout << "Press Enter to return to menu...";
-
+        
         cin.get();
         nextPage(tempId);
 
     }
-    else if (choice == "14") {
+    else if (choice == "14"){
         currentUser.view_user_is_blocked();
         cout << "Press Enter to return to menu...";
         cin.get();
@@ -636,7 +464,7 @@ void nextPage(int tempId)
 
 
     }
-
+        
     else if (choice == "15") {
         cout << "Logging out...\n";
         return;
@@ -644,41 +472,50 @@ void nextPage(int tempId)
     }
 
     else {
-
+      
         cout << "Invalid choice. Try again.\n";
         nextPage(tempId);
     }
 }
 
-// Main function
-int main() {
-    // Load existing data
-    loadAllData();
 
-    // Main loop
-    while (true) {
-        showMainMenu();
+
+signed main() {
+    /* Welcome to my Home (*/   Youssef   /*)   */
         string choice;
+    do {
+        showMenu();
         cout << "Enter choice: ";
-        getline(cin, choice);
+        cin >> choice;
+        cin.ignore();
 
         if (choice == "1") {
-            registerUser();
+            users[id] = registerUser(id, users);
+            users[id].setId(id);
+            currentId = id;
+            id++;
+            nextPage(currentId);
+
         }
         else if (choice == "2") {
-            if (loginUser()) {                
-               nextPage(currentId);
-            }
+            if (loginUser(users))
+                nextPage(currentId);
         }
         else if (choice == "3") {
-            saveAllData();
-            typewriterEffect("Goodbye!", COLOR_SUCCESS);
-            break;
+            setColor(10);
+            string text = "BYE BYE!";
+            for (int i = 0; i < text.size(); i++) {
+                cout << text[i];
+                Sleep(100);
+            }
+            setColor(7);
+
+            return 0;
         }
         else {
-            typewriterEffect("Invalid choice.", COLOR_ERROR);
+            cout << "Invalid choice.\n";
         }
-    }
+    } while (choice != "4");
 
     return 0;
 }

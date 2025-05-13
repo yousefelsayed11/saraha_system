@@ -23,8 +23,7 @@ void User::setAccount(pair<string, string> accountPair) {
     account.second = accountPair.second;
 }
 void User::setGender(string g) {
-    g= toupper(g[0]);
-    if (g == "M")
+    if (g == "M" || g == "m")
         gender = "Male";
     else
         gender = "Female";
@@ -35,39 +34,32 @@ void User::setName(string n) {
 void User::setId(int i) {
     id = i;
 }
-int User::getId()const
+int User::getId()
 {
     return id;
 }
-
-string User::getGender()const
-{
-    return gender;
-}
-string User::getName()const {
+string User::getName() {
     return name;
 }
 void User::setContacts(vector<Contacts>& newContacts)
 {
     contacts = newContacts;
 }
- const vector<Contacts>& User::getContacts()const
+vector<Contacts>& User::getContacts()
 {
     return contacts;
 }
-void User::setblockUser(int  newblockUser)
+void User::setblockUser(vector<int> newblockUser)
 {
-    blockUser.push_back(newblockUser);
+    blockUser = newblockUser;
 }
-const vector<int>& User::getblockUser()const
+vector<int>& User::getblockUser()
 {
     return blockUser;
 }
-const pair<string, string>& User::getAccount() const
-{
+pair<string, string>& User::getAccount() {
     return account;
 }
-
 
 void User::displayUser() const {
     Sleep(100);

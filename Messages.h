@@ -20,7 +20,7 @@ public:
 
    
     void sendMessage(string& senderUsername, int sendrid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers);
-    bool undoLastSentMessage(const string& currentUsername);
+    bool undoLastSentMessage();
     bool is_username_regiter(string username, vector<User*>& allUsers);
 
 
@@ -32,9 +32,9 @@ private:
 public:
     void viewMyReceivedMessages(string& myUsername);
 
-   const vector<Message>& getSentMessages()const;
+    vector<Message>& getSentMessages();
     void viewReceivedMessageFrom(int senderId, string& receiverUsername);
-    void setSentMessages(vector<Message> msg);
+
     map<string, vector<Message>>& getReceivedMessages();
 
 };
