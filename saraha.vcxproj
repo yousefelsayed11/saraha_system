@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlockManager.cpp" />
     <ClCompile Include="Contacts.cpp" />
     <ClCompile Include="Favorites.cpp" />
     <ClCompile Include="Message.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockManager.h" />
     <ClInclude Include="Contacts.h" />
     <ClInclude Include="Favorites.h" />
     <ClInclude Include="Message.h" />

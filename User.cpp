@@ -82,22 +82,7 @@ string User::getGender()const
 string User::getName()const {
     return name;
 }
-void User::setContacts(vector<Contacts>& newContacts)
-{
-    contacts = newContacts;
-}
- const vector<Contacts>& User::getContacts()const
-{
-    return contacts;
-}
-void User::setblockUser(int  newblockUser)
-{
-    blockUser.push_back(newblockUser);
-}
-const vector<int>& User::getblockUser()const
-{
-    return blockUser;
-}
+
 const pair<string, string>& User::getAccount() const
 {
     return account;
@@ -111,8 +96,8 @@ void User::displayUser()  {
     cout << "Username: " << name << el;
     cout << "Gender: " << gender << el;
     cout << "User ID: " << id << el;
-    for (const auto& c : contacts)
-        cout << "Contact ID: " << c.id<< el;
+   /* for (const auto& c : contacts)
+        cout << "Contact ID: " << c.id<< el;*/
     cout << "press ( y ) if you want change password\n";
     string x;
     getline(cin, x);
@@ -137,134 +122,6 @@ bool User::is_id_register(int id, vector<User*>& allUsers)
     return false;
 }
 
-
-void User::addContact(int contactID)
-{
-    if (id == contactID)
-    {
-        cout << "You can perform this action.\n";
-        return;
-    }
-    if (!contactExists(contactID))
-    {
-        contacts.push_back(Contacts(contactID));
-        cout << "Contact with ID " << contactID << " added for user: " << name << endl;
-    }
-    else {
-        cout << "Contact with ID " << contactID << " already exists." << endl;
-    }
-}
-
-void User::removeContact(int contactID)
-{
-    if (contactExists(contactID)) {
-        contacts.erase(remove(contacts.begin(), contacts.end(), contactID), contacts.end());
-        cout << "Contact \"" << contactID << "\" removed.\n";
-    }
-    else {
-        cout << "Contact \"" << contactID << "\" not found.\n";
-    }
-}
-
-void User::view_contact()
-{
- 
-    if (contacts.empty()) {
-        cout << "No contacts found.\n";
-        return;
-    }
-    vector<pair<int, int>> sortedMessages;
-    for (auto& pair : senderMessageCount) {
-        sortedMessages.push_back(pair);
-    }
-    sort(sortedMessages.begin(), sortedMessages.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
-        return a.second > b.second; 
-        });
-
-    for (auto& pair : sortedMessages) {
-        cout << "Contact ID: " << pair.first << "  Messages: " << pair.second<< endl;
-    }
-    
-}
-
-bool User::contactExists(int contactID)
-{
-    for (auto& iterator : contacts) {
-        if (iterator.id == contactID)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//bool User::isblock(string name)
-//{
-//    for (auto found : blockUser)
-//        if (found == na)
-//            return true;
-//    return false;
-//}
-
-bool User::isblock(int ID)
-{
-    for (auto found : blockUser)
-        if (found == ID)
-            return true;
-    return false;
-}
-
-void User::doB_User(int Id)
-{
-    if (Id == id)
-    {
-        cout << "You can perform this action.\n";
-        return;
-    }
-    if (!isblock(Id)) {
-        blockUser.push_back(Id);
-        string text = "done blocked the user : ";
-        type(text);
-        cout << Id << el;
-      /*  cout << blockUser.size();*/
-    }
-    else
-    {
-        cout << "this user is already blocked before\n";
-    }
-
-}
-
-void User::unBlock(int Id)
-{
-
-    for (auto it = blockUser.begin();it != blockUser.end();++it) {
-        if (*it == Id) {
-            blockUser.erase(it);
-            type("UnBlock :");
-            cout << Id << el;
-            return;
-        }
-    }
-    cout << "this User notBlocked " << Id << el;
-
-}
-
-void User::view_user_is_blocked()
-{
-    if (blockUser.empty()) {
-        cout << "You have not blocked any users.\n";
-        return;
-    }
-
-    cout << "Blocked Users:\n";
-    for (int Id : blockUser) {
-        cout << "- User ID: " << Id << endl;
-    }
-    
-}
-
 Favorites& User::getFavorites()
 {
     return favorites;
@@ -272,9 +129,30 @@ Favorites& User::getFavorites()
 
 
 
+
 const Favorites& User::getFavorites()const
 {
     return favorites;
+}
+
+Contacts& User::getContacts()
+{
+    return contact;
+}
+
+BlockManager& User::getBlockManager()
+{
+    return blockManager;
+}
+
+const Contacts& User::getContacts()const
+{
+    return contact;
+}
+
+const BlockManager& User::getBlockManager()const
+{
+    return blockManager;
 }
 
 bool isStrongPassword(const string& password) {

@@ -8,22 +8,21 @@
 #include "Message.h"
 #include <stack>
 #include "Favorites.h"
-
+#include "BlockManager.h"
 using namespace std;
 class User {
 private:
-    pair<string, string> account; // email → hashed password
-   
-   /* map<int, vector<Contacts>>contacts;*/
-    vector<Contacts> contacts;
+    pair<string, string> account; 
     string gender;
     string name;
     int id;
-    vector<int >blockUser;
     Favorites favorites;
+    Contacts contact;
+    BlockManager blockManager;
+
 
 public:
-     map<int, int> senderMessageCount;
+    
     User() = default;
     User(std::string name, std::pair<std::string, std::string> credentials, std::string gender, int id);
     // Setter
@@ -33,31 +32,23 @@ public:
     void setGender(string g);
     void setName(string n);
     void setId(int i);
-    void setContacts(vector<Contacts>& newContacts);
-    void setblockUser(int newblockUser);
-    //getter
+ 
     int getId()const;
     string getGender()const;
     string getName()const;
-    const vector<Contacts>& getContacts()const ;
-   const vector<int>& getblockUser() const;
+    
     const pair<string, string>& getAccount()const;
+
     //more 
     void displayUser() ;
     bool login(const string& email, const string& password) const;
     bool is_id_register(int id, vector<User*>& allUsers);              
-    void addContact(int contactID);
-    void removeContact(int contactID);
-    void view_contact();
-    bool contactExists(int contactID);
-    //bool isblock(string name);
-    bool isblock(int id);
-    void doB_User(int id);
-    void unBlock(int id);
-    void view_user_is_blocked();
     Favorites& getFavorites(); 
-    const Favorites& getFavorites() const; 
-
+    const Favorites& getFavorites() const;
+     Contacts& getContacts();
+     BlockManager& getBlockManager();
+     const Contacts& getContacts()const;
+     const BlockManager& getBlockManager()const;
 
 };
 bool isStrongPassword(const string& password);

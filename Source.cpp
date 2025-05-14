@@ -18,6 +18,8 @@
 #include <iomanip>
 #include <fstream>
 #include <limits>
+#include "Contacts.h"
+#include "BlockManager.h"
 
 using namespace std;
 
@@ -301,7 +303,7 @@ void loadAllData() {
                     int cid = stoi(cidStr);
 
                     if (users.count(uid) && users.count(cid)) {
-                        users[uid].addContact(cid);
+                        users[uid].getContacts().addContact(cid);
                     }
                 }
                 catch (...) {
@@ -328,7 +330,7 @@ void loadAllData() {
                     int bid = stoi(bidStr);
 
                     if (users.count(uid)) {
-                        users[uid].setblockUser(bid);
+                        users[uid].getBlockManager().setblockUser(bid);
                     }
                 }
                 catch (...) {
@@ -435,8 +437,8 @@ void saveAllData() {
     if (contactFile) {
         contactFile << "UserID,ContactID\n";
         for (const auto& pair : users) {
-            for (const auto& contact : pair.second.getContacts()) {
-                contactFile << pair.first << "," << contact.id << "\n";
+            for (const auto& contact : pair.second.getContacts().getContacts_id()) {
+                contactFile << pair.first << "," << contact << "\n";
             }
         }
         contactFile.close();
@@ -447,7 +449,7 @@ void saveAllData() {
     if (blockFile) {
         blockFile << "UserID,BlockedID\n";
         for (const auto& pair : users) {
-            for (const auto& bid : pair.second.getblockUser()) {
+            for (const auto& bid : pair.second.getBlockManager().getblockUser()) {
                 blockFile << pair.first << "," << bid << "\n";
             }
         }
@@ -552,7 +554,7 @@ void nextPage(int tempId)
                 if (name == receiverUsername)
                     id = pair.second.getId();
             }
-            if (currentUser.isblock(id)) {
+            if (currentUser.getBlockManager().isblock(id)) {
                 cout << "this accout has been blocked\n";
                 cout << "Press Enter to return to menu...\n";
                 cin.get();
@@ -693,16 +695,16 @@ void nextPage(int tempId)
         nextPage(tempId);
     }
     else if (choice == "9") {
-        currentUser.view_contact();
-        if (!currentUser.getContacts().empty())
+        currentUser.getContacts().view_contact();
+        if (!currentUser.getContacts().getContacts_id().empty())
         {
 
             cout << "enter the id want to remove him\n ";
             cin >> ID;
 
-            if (currentUser.contactExists(ID))
+            if (currentUser.getContacts().contactExists(ID))
             {
-                currentUser.removeContact(ID);
+                currentUser.getContacts().removeContact(ID);
 
 
             }
@@ -718,7 +720,7 @@ void nextPage(int tempId)
 
         cout << " enter the contact is to want to search \n";
         cin >> ID;
-        if (currentUser.contactExists(ID))
+        if (currentUser.getContacts().contactExists(ID))
         {
             cout << "Contact with ID " << ID << " exists in your contact list." << endl;
         }
@@ -731,7 +733,7 @@ void nextPage(int tempId)
 
     }
     else if (choice == "11") {
-        currentUser.view_contact();
+        currentUser.getContacts().view_contact();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -747,7 +749,7 @@ void nextPage(int tempId)
         }
         else
         {
-            currentUser.doB_User(ID);
+            currentUser.getBlockManager().doB_User(ID);
 
         }
 
@@ -758,13 +760,13 @@ void nextPage(int tempId)
 
     }
     else if (choice == "13") {
-        currentUser.view_user_is_blocked();
-        if (!currentUser.getblockUser().empty())
+        currentUser.getBlockManager().view_user_is_blocked();
+        if (!currentUser.getBlockManager().getblockUser().empty())
         {
 
             cout << "enter the id want to unblocked him\n ";
             cin >> ID;
-            currentUser.unBlock(ID);
+            currentUser.getBlockManager().unBlock(ID);
             cin.ignore();
         }
 
@@ -775,7 +777,7 @@ void nextPage(int tempId)
 
     }
     else if (choice == "14") {
-        currentUser.view_user_is_blocked();
+        currentUser.getBlockManager().view_user_is_blocked();
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);

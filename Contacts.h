@@ -9,11 +9,19 @@
 using namespace std;
 class Contacts
 {
+private:
+	 map<int, int> senderMessageCount;
+	 vector<int> contacts;
 public:
-	int id;
-	Contacts(int id) : id(id) {}
-	bool operator==(const Contacts& other) const {
-		return this->id == other.id;
-	}
+	void addContact(int contactID);
+	void removeContact(int contactID);
+	void view_contact();
+	bool contactExists(int contactID);
+	void setContacts(vector<int> newContacts);
+	vector<int> getContacts_id()const;
+	void setSenderMessageCount(map<int, int> newSenderMessageCount);
+	map<int, int>& getSenderMessageCount();
 
+	
+	 
 };

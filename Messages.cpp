@@ -8,15 +8,17 @@ using namespace std;
 
 void Messages::sendMessage(string& senderUsername,int senderid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers) {
     for (User* u : allUsers) {
-
+ 
         if (u->getName() == receiverUsername) {
-            if (u->isblock(senderid))
+            if (u->getBlockManager().isblock(senderid))
             {
                 cout << " is blocked him cannot send to the message \n";
                 return;
             }
-            u->senderMessageCount[senderid]++;
-            u->addContact(senderid);
+            u->getContacts().getSenderMessageCount()[senderid]++;
+            cout << "Added message for sender ID: " << senderid << endl;
+            u->getContacts().addContact(senderid);
+            
             break;
         }
     }
