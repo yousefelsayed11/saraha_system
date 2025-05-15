@@ -1,61 +1,45 @@
 #include "BlockManager.h"
 #include "User.h"
-bool BlockManager::isblock(int ID)
-{
 
-    for (auto found : blockUser)
-        if (found == ID)
-            return true;
-    return false;
+bool BlockManager::isBlocked(int ownerID, int targetID) {
+    return blockUser[ownerID].count(targetID) > 0;
 }
 
-void BlockManager::doB_User(int ID)
-{
-    if (!isblock(ID)) {
-        blockUser.push_back(ID);
-        string text = "done blocked the user : ";
-        type(text);
-        cout << ID << endl;
-        /*  cout << blockUser.size();*/
+void BlockManager::blockUserBy(int ownerID, int targetID) {
+    if (!isBlocked(ownerID, targetID)) {
+        blockUser[ownerID].insert(targetID);
+        cout << "User " << ownerID << " has blocked user " << targetID << ".\n";
     }
-    else
-    {
-        cout << "this user is already blocked before\n";
+    else {
+        cout << "User " << targetID << " is already blocked by user " << ownerID << ".\n";
     }
 }
 
-void BlockManager::unBlock(int ID)
-{
-    for (auto it = blockUser.begin();it != blockUser.end();++it) {
-        if (*it == ID) {
-            blockUser.erase(it);
-            type("UnBlock :");
-            cout << ID << endl;
-            return;
-        }
+void BlockManager::unblockUserBy(int ownerID, int targetID) {
+    if (blockUser[ownerID].erase(targetID)) {
+        cout << "User " << ownerID << " has unblocked user " << targetID << ".\n";
     }
-    cout << "this User notBlocked " << ID << endl;
+    else {
+        cout << "User " << targetID << " was not blocked by user " << ownerID << ".\n";
+    }
 }
 
-void BlockManager::view_user_is_blocked()
-{
-    if (blockUser.empty()) {
-        cout << "You have not blocked any users.\n";
+void BlockManager::viewBlockedUsers(int ownerID) {
+    if (blockUser[ownerID].empty()) {
+        cout << "User " << ownerID << " has not blocked any users.\n";
         return;
     }
 
-    cout << "Blocked Users:\n";
-    for (int Id : blockUser) {
-        cout << "- User ID: " << Id << endl;
+    cout << "User " << ownerID << " has blocked:\n";
+    for (int id : blockUser[ownerID]) {
+        cout << "- User ID: " << id << endl;
     }
 }
 
-void BlockManager::setblockUser(int newblockUser)
-{
-    blockUser.push_back(newblockUser);
+void BlockManager::setBlockUser(int ownerID, const set<int>& blockedSet) {
+    blockUser[ownerID] = blockedSet;
 }
 
-const vector<int>& BlockManager::getblockUser() const
-{
+const unordered_map<int, set<int>>& BlockManager::getBlockUser() const {
     return blockUser;
 }

@@ -3,20 +3,22 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <set>
 #include <map>
 #include <windows.h>
 #include "Message.h"
 class BlockManager
 {
-private:
-	vector<int >blockUser;
+    unordered_map<int, set<int>> blockUser; // ownerID -> set of blocked IDs
+
 public:
-    bool isblock(int id);
-    void doB_User(int id);
-    void unBlock(int id);
-    void view_user_is_blocked();
-    void setblockUser(int newblockUser);
-    const vector<int>& getblockUser() const;
+    bool isBlocked(int ownerID, int targetID);
+    void blockUserBy(int ownerID, int targetID);
+    void unblockUserBy(int ownerID, int targetID);
+    void viewBlockedUsers(int ownerID);
+    void setBlockUser(int ownerID, const set<int>& blockedSet);
+    const unordered_map<int, set<int>>& getBlockUser() const;
 
 };
 

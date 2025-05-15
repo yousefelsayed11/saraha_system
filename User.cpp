@@ -135,25 +135,6 @@ const Favorites& User::getFavorites()const
     return favorites;
 }
 
-Contacts& User::getContacts()
-{
-    return contact;
-}
-
-BlockManager& User::getBlockManager()
-{
-    return blockManager;
-}
-
-const Contacts& User::getContacts()const
-{
-    return contact;
-}
-
-const BlockManager& User::getBlockManager()const
-{
-    return blockManager;
-}
 
 bool isStrongPassword(const string& password) {
     if (password.length() < 8) return false;

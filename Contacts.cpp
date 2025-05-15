@@ -1,79 +1,75 @@
 #include "Contacts.h"
-#include<algorithm>
+#include "unordered_map"
+#include "map"
+#include <algorithm>
 #include <iostream>
-#include "vector"
-void Contacts::addContact(int contactID)
+using namespace std;
+
+void Contacts::addContact(int userID, int contactID)
 {
-    
-    if (!contactExists( contactID))
-    {
-        contacts.push_back(contactID);
-        
-        cout << "Contact with ID " << contactID << " added  "<< endl;
+    if (!contactExists(userID, contactID)) {
+        contacts[userID].insert(contactID);
+        cout << "Contact with ID " << contactID << " added for User " << userID << endl;
     }
     else {
-        cout << "Contact with ID " << contactID << " already exists." << endl;
+        cout << "Contact with ID " << contactID << " already exists for User " << userID << endl;
     }
 }
 
-void Contacts::removeContact( int contactID)
+void Contacts::removeContact(int userID, int contactID)
 {
-    if (contactExists( contactID)) {
-        contacts.erase(remove(contacts.begin(), contacts.end(), contactID), contacts.end());
-        cout << "Contact \"" << contactID << "\" removed.\n";
+    if (contactExists(userID, contactID)) {
+        contacts[userID].erase(contactID);
+        cout << "Contact \"" << contactID << "\" removed from User " << userID << ".\n";
     }
     else {
-        cout << "Contact \"" << contactID << "\" not found.\n";
+        cout << "Contact \"" << contactID << "\" not found for User " << userID << ".\n";
     }
 }
 
-void Contacts::view_contact()
-{
-    if (contacts.empty()) {
-        cout << "No contacts found.\n";
+
+
+void Contacts::view_contact(int userId) const {
+    auto it = senderMessageCount.find(userId);
+    if (it == senderMessageCount.end() || it->second.empty()) {
+        cout << "No contacts found for user ID " << userId << endl;
         return;
     }
-    vector<pair<int, int>> sortedMessages;
-    for (auto& pair : senderMessageCount) {
-        sortedMessages.push_back(pair);
-    }
+
+    const map<int, int>& userMsgMap = it->second;
+    vector<pair<int, int>> sortedMessages(userMsgMap.begin(), userMsgMap.end());
+
     sort(sortedMessages.begin(), sortedMessages.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
         return a.second > b.second;
         });
 
-    for (auto& pair : sortedMessages) {
+    for (const auto& pair : sortedMessages) {
         cout << "Contact ID: " << pair.first << "  Messages: " << pair.second << endl;
     }
-
-
 }
-
-bool Contacts::contactExists( int contactID)
+bool Contacts::contactExists(int userID, int contactID)
 {
-    for (const auto& c : contacts) {
-        if (c == contactID)
-            return true;
-    }
-    return false;
+    return contacts[userID].count(contactID) > 0;
 }
 
-void Contacts::setContacts(vector<int> newContacts)
+void Contacts::setContacts(unordered_map<int, set<int>> newContacts)
 {
-    contacts = newContacts;
+    contacts = move(newContacts);
 }
 
-vector<int> Contacts::getContacts_id()const
+const unordered_map<int, set<int>>& Contacts::getContacts() const
 {
     return contacts;
 }
 
-void Contacts::setSenderMessageCount(map<int, int> newSenderMessageCount)
+void Contacts::setSenderMessageCount(int userId, const map<int, int>& newSenderMessageCount)
 {
-    senderMessageCount = newSenderMessageCount;
+    map<int, int>& getSenderMessageCount(int userId);
 }
 
-map<int, int>& Contacts::getSenderMessageCount()
+
+map<int, int>& Contacts::getSenderMessageCount(int userId)
 {
-    return senderMessageCount;
+    return senderMessageCount[userId];
 }
 

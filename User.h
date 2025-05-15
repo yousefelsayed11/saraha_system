@@ -17,10 +17,7 @@ private:
     string name;
     int id;
     Favorites favorites;
-    Contacts contact;
-    BlockManager blockManager;
-
-
+   
 public:
     
     User() = default;
@@ -45,11 +42,7 @@ public:
     bool is_id_register(int id, vector<User*>& allUsers);              
     Favorites& getFavorites(); 
     const Favorites& getFavorites() const;
-     Contacts& getContacts();
-     BlockManager& getBlockManager();
-     const Contacts& getContacts()const;
-     const BlockManager& getBlockManager()const;
-
+    
 };
 bool isStrongPassword(const string& password);
 string hashPassword(const string& password);

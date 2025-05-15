@@ -1,5 +1,7 @@
 #pragma once
 #include "Message.h"
+#include "Contacts.h"
+#include "BlockManager.h"
 #include <vector>
 #include <stack>
 #include <map>
@@ -7,6 +9,8 @@
 #include<iostream>
 using namespace std;
 class User;
+class BlockManager;
+class Contacts;
 
 class Messages {
 private:
@@ -19,7 +23,7 @@ public:
     vector<string> registeredUsernames;
 
    
-    void sendMessage(string& senderUsername, int sendrid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers);
+    void sendMessage(string& senderUsername, int sendrid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers, Contacts& contacts, BlockManager& blockManager);
     bool undoLastSentMessage(const string& currentUsername);
     bool is_username_regiter(string username, vector<User*>& allUsers);
     void viewSentMessages(string& currentUsername);

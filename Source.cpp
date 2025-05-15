@@ -32,12 +32,14 @@ const int MAX_LOGIN_ATTEMPTS = 5;
 // Global variables
 //Favorites favorites;
 Messages messages;
+Contacts contacts;
 unordered_map<int, User> users;
+BlockManager blockManager;
 int currentId = 0;
 int nextUserId = 1;
 
 // Helper functions
-//void setColor(int color) {
+//void setColor(int color) {ظ
 //    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 //}
 
@@ -301,9 +303,10 @@ void loadAllData() {
                 try {
                     int uid = stoi(uidStr);
                     int cid = stoi(cidStr);
-
+                   
                     if (users.count(uid) && users.count(cid)) {
-                        users[uid].getContacts().addContact(cid);
+                        
+                        contacts.addContact(uid, cid);
                     }
                 }
                 catch (...) {
@@ -330,7 +333,7 @@ void loadAllData() {
                     int bid = stoi(bidStr);
 
                     if (users.count(uid)) {
-                        users[uid].getBlockManager().setblockUser(bid);
+                        blockManager.blockUserBy(uid, bid);
                     }
                 }
                 catch (...) {
@@ -436,8 +439,8 @@ void saveAllData() {
     ofstream contactFile("contacts.csv");
     if (contactFile) {
         contactFile << "UserID,ContactID\n";
-        for (const auto& pair : users) {
-            for (const auto& contact : pair.second.getContacts().getContacts_id()) {
+        for (const auto& pair :contacts.getContacts() ) {
+            for (const auto& contact : pair.second) {
                 contactFile << pair.first << "," << contact << "\n";
             }
         }
@@ -448,8 +451,8 @@ void saveAllData() {
     ofstream blockFile("blocked_users.csv");
     if (blockFile) {
         blockFile << "UserID,BlockedID\n";
-        for (const auto& pair : users) {
-            for (const auto& bid : pair.second.getBlockManager().getblockUser()) {
+        for (const auto& pair : blockManager.getBlockUser()) {
+            for (const auto& bid : pair.second) {
                 blockFile << pair.first << "," << bid << "\n";
             }
         }
@@ -554,7 +557,7 @@ void nextPage(int tempId)
                 if (name == receiverUsername)
                     id = pair.second.getId();
             }
-            if (currentUser.getBlockManager().isblock(id)) {
+            if (blockManager.isBlocked(currentId,id )){
                 cout << "this accout has been blocked\n";
                 cout << "Press Enter to return to menu...\n";
                 cin.get();
@@ -568,7 +571,7 @@ void nextPage(int tempId)
             int senderid = currentUser.getId();
 
            
-            messages.sendMessage(senderUsername, senderid, receiverUsername, content, messages.registeredUsernames, allUsers);
+            messages.sendMessage(senderUsername, senderid, receiverUsername, content, messages.registeredUsernames, allUsers, contacts,blockManager);
         }
         else
         {
@@ -695,16 +698,19 @@ void nextPage(int tempId)
         nextPage(tempId);
     }
     else if (choice == "9") {
-        currentUser.getContacts().view_contact();
-        if (!currentUser.getContacts().getContacts_id().empty())
+        contacts.view_contact(currentId);
+        /*currentUser.getContacts().view_contact();*/
+        
+        if (!contacts.getContacts().empty())
         {
 
             cout << "enter the id want to remove him\n ";
             cin >> ID;
-
-            if (currentUser.getContacts().contactExists(ID))
+          
+            if (contacts.contactExists(currentId, ID))
             {
-                currentUser.getContacts().removeContact(ID);
+                contacts.removeContact(currentId, ID);
+               
 
 
             }
@@ -720,7 +726,7 @@ void nextPage(int tempId)
 
         cout << " enter the contact is to want to search \n";
         cin >> ID;
-        if (currentUser.getContacts().contactExists(ID))
+        if (contacts.contactExists(currentId, ID))
         {
             cout << "Contact with ID " << ID << " exists in your contact list." << endl;
         }
@@ -733,7 +739,7 @@ void nextPage(int tempId)
 
     }
     else if (choice == "11") {
-        currentUser.getContacts().view_contact();
+        contacts.view_contact(currentId);
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -748,8 +754,10 @@ void nextPage(int tempId)
             cout << "This id isn't registered.\n";
         }
         else
+
         {
-            currentUser.getBlockManager().doB_User(ID);
+            blockManager.blockUserBy(currentId, ID);
+            
 
         }
 
@@ -760,13 +768,14 @@ void nextPage(int tempId)
 
     }
     else if (choice == "13") {
-        currentUser.getBlockManager().view_user_is_blocked();
-        if (!currentUser.getBlockManager().getblockUser().empty())
+        blockManager.viewBlockedUsers(currentId);
+
+        if (!blockManager.getBlockUser().empty())
         {
 
             cout << "enter the id want to unblocked him\n ";
             cin >> ID;
-            currentUser.getBlockManager().unBlock(ID);
+            blockManager.unblockUserBy(currentId, ID);
             cin.ignore();
         }
 
@@ -777,7 +786,7 @@ void nextPage(int tempId)
 
     }
     else if (choice == "14") {
-        currentUser.getBlockManager().view_user_is_blocked();
+        blockManager.viewBlockedUsers(currentId);
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);

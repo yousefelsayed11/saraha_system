@@ -6,18 +6,20 @@
 using namespace std;
 
 
-void Messages::sendMessage(string& senderUsername,int senderid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers) {
+void Messages::sendMessage(string& senderUsername,int senderid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers, Contacts& contacts, BlockManager& blockManager) {
+    
     for (User* u : allUsers) {
  
         if (u->getName() == receiverUsername) {
-            if (u->getBlockManager().isblock(senderid))
+
+            if (blockManager.isBlocked(u->getId(), senderid))
             {
                 cout << " is blocked him cannot send to the message \n";
                 return;
             }
-            u->getContacts().getSenderMessageCount()[senderid]++;
+            contacts.getSenderMessageCount(u->getId())[senderid]++;
             cout << "Added message for sender ID: " << senderid << endl;
-            u->getContacts().addContact(senderid);
+            contacts.addContact(u->getId(), senderid);
             
             break;
         }
