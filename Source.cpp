@@ -20,15 +20,12 @@
 #include <limits>
 #include "Contacts.h"
 #include "BlockManager.h"
-
 using namespace std;
-
 // Constants
 const int COLOR_SUCCESS = 10;
 const int COLOR_ERROR = 12;
 const int COLOR_DEFAULT = 7;
 const int MAX_LOGIN_ATTEMPTS = 5;
-
 // Global variables
 //Favorites favorites;
 Messages messages;
@@ -37,20 +34,16 @@ unordered_map<int, User> users;
 BlockManager blockManager;
 int currentId = 0;
 int nextUserId = 1;
-
 // Helper functions
 //void setColor(int color) {ظ
 //    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 //}
-
 void clearScreen() {
     system("cls");
 }
-
 void sleep(int ms) {
     Sleep(ms);
 }
-
 void typewriterEffect(const string& text, int color = COLOR_DEFAULT) {
     setColor(color);
     for (char c : text) {
@@ -60,7 +53,6 @@ void typewriterEffect(const string& text, int color = COLOR_DEFAULT) {
     setColor(COLOR_DEFAULT);
     cout << endl;
 }
-
 bool isEmailUnique(const string& email) {
     for (const auto& pair : users) {
         if (pair.second.getAccount().first == email) {
@@ -69,7 +61,6 @@ bool isEmailUnique(const string& email) {
     }
     return true;
 }
-
 // Core functions
 User registerUser() {
     clearScreen();
@@ -144,7 +135,6 @@ User registerUser() {
 
     return newUser;
 }
-
 bool loginUser() {
     clearScreen();
     cout << "  ------------------> Login Page\n";
@@ -187,8 +177,6 @@ bool loginUser() {
     typewriterEffect("Maximum login attempts reached.", COLOR_ERROR);
     return false;
 }
-
-
 // Menu functions
 void showMainMenu() {
     clearScreen();
@@ -198,8 +186,6 @@ void showMainMenu() {
     cout << "3. Exit\n";
     cout << "===========================\n";
 }
-
-
 // Helper function to unescape CSV fields
 string unescapeCSV(const string& input) {
     if (input.empty() || input[0] != '"') {
@@ -297,16 +283,19 @@ void loadAllData() {
 
         while (getline(contactFile, line)) {
             stringstream ss(line);
-            string uidStr, cidStr;
+            string uidStr, cidStr, countStr;
 
             if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',')) {
                 try {
                     int uid = stoi(uidStr);
                     int cid = stoi(cidStr);
+                    int count = stoi(countStr);
                    
                     if (users.count(uid) && users.count(cid)) {
                         
                         contacts.addContact(uid, cid);
+                        contacts.getSenderMessageCount(uid)[cid] = count;
+                        
                     }
                 }
                 catch (...) {
@@ -438,10 +427,18 @@ void saveAllData() {
     // Save contacts
     ofstream contactFile("contacts.csv");
     if (contactFile) {
-        contactFile << "UserID,ContactID\n";
-        for (const auto& pair :contacts.getContacts() ) {
-            for (const auto& contact : pair.second) {
-                contactFile << pair.first << "," << contact << "\n";
+        contactFile << "UserID,ContactID,MessageCount\n";
+        for (const auto& pair : contacts.getContacts()) {
+            int userID = pair.first;
+            for (const auto& contactID : pair.second) {
+                int msgCount = 0;
+                // نحصل على عدد الرسائل من senderMessageCount
+                auto it = contacts.getSenderMessageCount(userID).find(contactID);
+                if (it != contacts.getSenderMessageCount(userID).end()) {
+                    msgCount = it->second;
+                }
+
+                contactFile << userID << "," << contactID << "," << msgCount << "\n";
             }
         }
         contactFile.close();
@@ -497,8 +494,6 @@ void saveAllData() {
 }
 
 // Helper function to escape CSV special characters
-
-
 void showUserMenu() {
     clearScreen();
     cout << "\n===== User Menu =====\n";
@@ -699,9 +694,9 @@ void nextPage(int tempId)
     }
     else if (choice == "9") {
         contacts.view_contact(currentId);
-        /*currentUser.getContacts().view_contact();*/
+   
         
-        if (!contacts.getContacts().empty())
+        if (!contacts.getContacts().at(currentId).empty())
         {
 
             cout << "enter the id want to remove him\n ";
@@ -786,7 +781,25 @@ void nextPage(int tempId)
 
     }
     else if (choice == "14") {
-        blockManager.viewBlockedUsers(currentId);
+        cout << "1. View users I have blocked\n";
+        cout << "2. View users who have blocked me\n";
+
+        do
+        {
+            cout << "Enter your choice: ";
+            cin >> choice;
+            cin.ignore();
+            if (choice == "1") {
+                blockManager.viewBlockedUsers(currentId);
+            }
+            else if (choice == "2") {
+                blockManager.viewUsersWhoBlocked(currentId, allUsers);
+            }
+            else {
+                cout << "Invalid choice. Please enter 1 or 2.\n";
+            }
+        } while (choice!="1"&& choice!="2");
+       
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);

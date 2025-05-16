@@ -129,7 +129,6 @@ Favorites& User::getFavorites()
 
 
 
-
 const Favorites& User::getFavorites()const
 {
     return favorites;

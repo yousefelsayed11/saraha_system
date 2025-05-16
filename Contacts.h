@@ -21,6 +21,7 @@ public:
     void view_contact(int userID) const;
     bool contactExists(int userID, int contactID);
     void setContacts(unordered_map<int, set<int>> newContacts);
+
     const unordered_map<int, set<int>>& getContacts() const;
     void setSenderMessageCount(int userId, const map<int, int>& newSenderMessageCount);
     map<int, int>& getSenderMessageCount(int userId);

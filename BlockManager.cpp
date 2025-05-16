@@ -36,6 +36,39 @@ void BlockManager::viewBlockedUsers(int ownerID) {
     }
 }
 
+void BlockManager::viewUsersWhoBlocked(int targetID, const vector<User*>& allUsers)
+{
+    vector<int> usersWhoBlocked;
+
+    for (const auto& entry : blockUser) {
+        int ownerID = entry.first;
+        const set<int>& blocked = entry.second;
+
+        if (blocked.find(targetID) != blocked.end()) {
+            usersWhoBlocked.push_back(ownerID);
+        }
+    }
+
+    if (usersWhoBlocked.empty()) {
+        cout << "No users have blocked you.\n";
+    }
+    else {
+        cout << "Users who blocked you:\n";
+        for (int blockerID : usersWhoBlocked) {
+  
+            string blockerName;
+            for (const User* user : allUsers) {
+                if (user->getId() == blockerID) {
+                    blockerName = user->getName();
+                    break;
+                }
+            }
+            cout << "- " << blockerName << " (ID: " << blockerID << ")\n";
+        }
+    }
+}
+
+
 void BlockManager::setBlockUser(int ownerID, const set<int>& blockedSet) {
     blockUser[ownerID] = blockedSet;
 }

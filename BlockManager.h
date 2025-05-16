@@ -8,15 +8,18 @@
 #include <map>
 #include <windows.h>
 #include "Message.h"
+#include "User.h"
+class User;
 class BlockManager
 {
-    unordered_map<int, set<int>> blockUser; // ownerID -> set of blocked IDs
-
+private:
+    unordered_map<int, set<int>> blockUser; 
 public:
     bool isBlocked(int ownerID, int targetID);
     void blockUserBy(int ownerID, int targetID);
     void unblockUserBy(int ownerID, int targetID);
     void viewBlockedUsers(int ownerID);
+    void viewUsersWhoBlocked(int targetID, const vector<User*>& allUsers);
     void setBlockUser(int ownerID, const set<int>& blockedSet);
     const unordered_map<int, set<int>>& getBlockUser() const;
 

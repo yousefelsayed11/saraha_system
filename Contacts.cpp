@@ -7,13 +7,8 @@ using namespace std;
 
 void Contacts::addContact(int userID, int contactID)
 {
-    if (!contactExists(userID, contactID)) {
-        contacts[userID].insert(contactID);
-        cout << "Contact with ID " << contactID << " added for User " << userID << endl;
-    }
-    else {
-        cout << "Contact with ID " << contactID << " already exists for User " << userID << endl;
-    }
+    contacts[userID].insert(contactID);
+    cout << "Contact with ID " << contactID << " added for User " << userID << endl;        
 }
 
 void Contacts::removeContact(int userID, int contactID)
@@ -30,23 +25,29 @@ void Contacts::removeContact(int userID, int contactID)
 
 
 void Contacts::view_contact(int userId) const {
-    auto it = senderMessageCount.find(userId);
-    if (it == senderMessageCount.end() || it->second.empty()) {
+    auto itContacts = contacts.find(userId);
+    if (itContacts == contacts.end() || itContacts->second.empty()) {
         cout << "No contacts found for user ID " << userId << endl;
         return;
     }
 
-    const map<int, int>& userMsgMap = it->second;
-    vector<pair<int, int>> sortedMessages(userMsgMap.begin(), userMsgMap.end());
+    cout << "Contacts for user ID " << userId << ":\n";
+    const set<int>& userContacts = itContacts->second;
 
-    sort(sortedMessages.begin(), sortedMessages.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
-        return a.second > b.second;
-        });
+    auto itMsgCount = senderMessageCount.find(userId);
 
-    for (const auto& pair : sortedMessages) {
-        cout << "Contact ID: " << pair.first << "  Messages: " << pair.second << endl;
+    for (int contactId : userContacts) {
+        int msgCount = 0;
+        if (itMsgCount != senderMessageCount.end()) {
+            auto itCount = itMsgCount->second.find(contactId);
+            if (itCount != itMsgCount->second.end()) {
+                msgCount = itCount->second;
+            }
+        }
+        cout << "Contact ID: " << contactId << "  Messages: " << msgCount << endl;
     }
 }
+
 bool Contacts::contactExists(int userID, int contactID)
 {
     return contacts[userID].count(contactID) > 0;
