@@ -61,6 +61,14 @@ bool isEmailUnique(const string& email) {
     }
     return true;
 }
+bool isUserNameUnique(const string& username) {
+    for (const auto& u : users) {
+        if ( u.second.getName() == username) {
+            return false;
+        }
+    }
+    return true;
+}
 // Core functions
 User registerUser() {
     clearScreen();
@@ -70,9 +78,16 @@ User registerUser() {
     cout << "<--------------- Registration Page\n";
 
     // Get username
+   
     cout << "Enter your username: ";
     getline(cin, username);
+    if (!isUserNameUnique(username))
+    {
+        typewriterEffect("This username is already registered.", COLOR_ERROR);
+        registerUser();
+    }
     newUser.setName(username);
+
 
     // Get email
     while (true) {
@@ -285,7 +300,7 @@ void loadAllData() {
             stringstream ss(line);
             string uidStr, cidStr, countStr;
 
-            if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',')) {
+            if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',')&& getline(ss, countStr)) {
                 try {
                     int uid = stoi(uidStr);
                     int cid = stoi(cidStr);
@@ -340,6 +355,8 @@ void loadAllData() {
         getline(messageFile, line); // Skip header
 
         vector<Message> loadedMessages;
+        map<string, vector<Message>> receivedMessages;
+
         while (getline(messageFile, line)) {
             stringstream ss(line);
             string userIdStr, senderIdStr, senderUsername, receiverUsername, content, timestampStr;
@@ -353,14 +370,18 @@ void loadAllData() {
                 try {
                     int senderId = stoi(senderIdStr);
                     Message msg(senderUsername, senderId, receiverUsername, content);
+
                     loadedMessages.push_back(msg);
+                    receivedMessages[receiverUsername].push_back(msg); // <-- Add to receiver's inbox
                 }
                 catch (...) {
                     continue;
                 }
             }
         }
+
         messages.setSentMessages(loadedMessages);
+        messages.setReceivedMessages(receivedMessages); // <-- Set the map
         messageFile.close();
     }
 

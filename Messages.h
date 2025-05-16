@@ -33,6 +33,7 @@ public:
 
    const vector<Message>& getSentMessages()const;
     void viewReceivedMessageFrom(int senderId, string& receiverUsername);
+    void setReceivedMessages( map<string, vector<Message>>);
     void setSentMessages(vector<Message> msg);
     map<string, vector<Message>>& getReceivedMessages();
 

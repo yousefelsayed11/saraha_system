@@ -7,8 +7,12 @@ using namespace std;
 
 void Contacts::addContact(int userID, int contactID)
 {
-    contacts[userID].insert(contactID);
-    cout << "Contact with ID " << contactID << " added for User " << userID << endl;        
+    if (!contactExists(userID, contactID))
+    {
+        contacts[userID].insert(contactID);
+        cout << "Contact with ID " << contactID << " added for User " << userID << endl;
+    }
+      
 }
 
 void Contacts::removeContact(int userID, int contactID)

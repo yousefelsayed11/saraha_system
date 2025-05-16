@@ -155,6 +155,11 @@ void Messages::viewReceivedMessageFrom(int senderId, string& receiverUsername) {
     }
 }
 
+void Messages::setReceivedMessages(map<string, vector<Message>>msg)
+{
+    this->receivedMessages = msg;
+}
+
 void Messages::setSentMessages(vector<Message> msg)
 {
     this->sentMessages = msg;
@@ -179,6 +184,7 @@ void Messages::viewMyReceivedMessages(string& myUsername) {
         cout << "You have not received any messages.\n";
     }
 }
+
 
 const vector<Message>& Messages::getSentMessages()const {
     return sentMessages;
