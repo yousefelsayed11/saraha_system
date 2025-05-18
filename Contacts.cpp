@@ -26,9 +26,15 @@ void Contacts::view_contact(int userID) const {
     }
 
     cout << "Contacts for user ID " << userID << ":\n";
-    for (const auto& pair : it->second) {
+    vector<pair<int, int>> sortedContacts(it->second.begin(), it->second.end());
+    sort(sortedContacts.begin(), sortedContacts.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+        return a.second > b.second;
+        });
+
+    for (const auto& pair : sortedContacts) {
         cout << "Contact ID: " << pair.first << "  Messages: " << pair.second << endl;
     }
+
 }
 
 bool Contacts::contactExists(int userID, int contactID) {
