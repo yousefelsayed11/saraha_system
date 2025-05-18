@@ -7,7 +7,7 @@ using namespace std;
 
 
 void Messages::sendMessage(string& senderUsername,int senderid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers, Contacts& contacts, BlockManager& blockManager) {
-    
+  
     for (User* u : allUsers) {
  
         if (u->getName() == receiverUsername) {
@@ -17,10 +17,9 @@ void Messages::sendMessage(string& senderUsername,int senderid, string& receiver
                 cout << " is blocked him cannot send to the message \n";
                 return;
             }
-            contacts.getSenderMessageCount(u->getId())[senderid]++;
-            cout << "Added message for sender ID: " << senderid << endl;
             contacts.addContact(u->getId(), senderid);
-            
+            contacts.getContacts()[u->getId()][senderid]++;
+            cout << "Added message for : " << senderUsername << endl;
             break;
         }
     }

@@ -300,17 +300,18 @@ void loadAllData() {
             stringstream ss(line);
             string uidStr, cidStr, countStr;
 
-            if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',')&& getline(ss, countStr)) {
+            if (getline(ss, uidStr, ',') && getline(ss, cidStr, ',') && getline(ss, countStr)) {
                 try {
                     int uid = stoi(uidStr);
                     int cid = stoi(cidStr);
                     int count = stoi(countStr);
-                   
+
                     if (users.count(uid) && users.count(cid)) {
                         
-                        contacts.addContact(uid, cid);
-                        contacts.getSenderMessageCount(uid)[cid] = count;
-                        
+                        if (!contacts.contactExists(uid, cid)) {
+                            contacts.addContact(uid, cid);
+                        }
+                        contacts.getContacts()[uid][cid] = count;
                     }
                 }
                 catch (...) {
@@ -451,19 +452,17 @@ void saveAllData() {
         contactFile << "UserID,ContactID,MessageCount\n";
         for (const auto& pair : contacts.getContacts()) {
             int userID = pair.first;
-            for (const auto& contactID : pair.second) {
-                int msgCount = 0;
-                // نحصل على عدد الرسائل من senderMessageCount
-                auto it = contacts.getSenderMessageCount(userID).find(contactID);
-                if (it != contacts.getSenderMessageCount(userID).end()) {
-                    msgCount = it->second;
-                }
+            const map<int, int>& contactMap = pair.second;
+            for (const auto& contactPair : contactMap) {
+                int contactID = contactPair.first;
+                int msgCount = contactPair.second;
 
                 contactFile << userID << "," << contactID << "," << msgCount << "\n";
             }
         }
         contactFile.close();
     }
+
 
     // Save blocked users
     ofstream blockFile("blocked_users.csv");
