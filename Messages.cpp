@@ -11,12 +11,6 @@ void Messages::sendMessage(string& senderUsername,int senderid, string& receiver
     for (User* u : allUsers) {
  
         if (u->getName() == receiverUsername) {
-
-            if (blockManager.isBlocked(u->getId(), senderid))
-            {
-                cout << " is blocked him cannot send to the message \n";
-                return;
-            }
             contacts.addContact(u->getId(), senderid);
             contacts.getContacts()[u->getId()][senderid]++;
             cout << "Added message for : " << senderUsername << endl;

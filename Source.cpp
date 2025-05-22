@@ -572,7 +572,7 @@ void nextPage(int tempId)
                 if (name == receiverUsername)
                     id = pair.second.getId();
             }
-            if (blockManager.isBlocked(currentId,id )){
+            if (blockManager.isBlocked(currentId,id )|| blockManager.isBlocked(id, currentId)){
                 cout << "this accout has been blocked\n";
                 cout << "Press Enter to return to menu...\n";
                 cin.get();
@@ -854,6 +854,7 @@ int main() {
 
         if (choice == "1") {
             registerUser();
+            nextPage(currentId);
         }
         else if (choice == "2") {
             if (loginUser()) {                
