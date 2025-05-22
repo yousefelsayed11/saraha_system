@@ -4,11 +4,13 @@
 void Contacts::addContact(int userID, int contactID) {
     if (!contactExists(userID, contactID)) {
         contacts[userID][contactID] = 0; 
-        cout << "Contact with ID " << contactID << " added for User " << userID << endl;
+        
     }
 }
 
 void Contacts::removeContact(int userID, int contactID) {
+   
+ 
     if (contactExists(userID, contactID)) {
         contacts[userID].erase(contactID);
         cout << "Contact \"" << contactID << "\" removed from User " << userID << ".\n";

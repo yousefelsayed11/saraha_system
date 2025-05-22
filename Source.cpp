@@ -713,24 +713,19 @@ void nextPage(int tempId)
         nextPage(tempId);
     }
     else if (choice == "9") {
-        contacts.view_contact(currentId);
-   
-        
-        if (!contacts.getContacts().at(currentId).empty())
-        {
-
-            cout << "enter the id want to remove him\n ";
-            cin >> ID;
-          
-            if (contacts.contactExists(currentId, ID))
-            {
-                contacts.removeContact(currentId, ID);
-               
-
-
-            }
-            cin.ignore();
+        auto it = contacts.getContacts().find(currentId);
+        if (it == contacts.getContacts().end() || it->second.empty()) {
+            cout << "No contacts found for this user. Nothing to remove." << endl;
+           
         }
+        else
+        {
+            contacts.view_contact(currentId);
+            cout << "Enter the ID of the contact you want to remove:\n";
+            cin >> ID;
+            contacts.removeContact(currentId, ID);
+            cin.ignore();
+        }       
         cout << "Press Enter to return to menu...";
 
         cin.get();
@@ -738,17 +733,25 @@ void nextPage(int tempId)
 
     }
     else if (choice == "10") {
+        auto it = contacts.getContacts().find(currentId);
+        if (it == contacts.getContacts().end() || it->second.empty()) {
+            cout << "No contacts found for this user. Nothing to search ." << endl;
 
-        cout << " enter the contact is to want to search \n";
-        cin >> ID;
-        if (contacts.contactExists(currentId, ID))
-        {
-            cout << "Contact with ID " << ID << " exists in your contact list." << endl;
         }
-        else
-            cout << "Contact with ID " << ID << " was not found in your contact list." << endl;
-        cout << "Press Enter to return to menu...";
-        cin.ignore();
+        else {
+            cout << "Enter the contact ID you want to search for: ";
+            cin >> ID;
+
+            if (contacts.contactExists(currentId, ID)) {
+                cout << "Contact with ID " << ID << " exists in your contact list.\n";
+            }
+            else {
+                cout << "Contact with ID " << ID << " was not found in your contact list.\n";
+            }
+            cin.ignore();
+        }
+
+        cout << "Press Enter to return to the menu...";
         cin.get();
         nextPage(tempId);
 
@@ -762,7 +765,8 @@ void nextPage(int tempId)
     }
     else if (choice == "12") {
 
-        cout << "enter the id want to blocked him \n";
+        cout << "Enter the ID of the user you want to block:\n";
+
         cin >> ID;
         if (!currentUser.is_id_register(ID, allUsers))
         {
@@ -771,8 +775,7 @@ void nextPage(int tempId)
         else
 
         {
-            blockManager.blockUserBy(currentId, ID);
-            
+            blockManager.blockUserBy(currentId, ID);            
 
         }
 
@@ -784,8 +787,8 @@ void nextPage(int tempId)
     }
     else if (choice == "13") {
         blockManager.viewBlockedUsers(currentId);
-
-        if (!blockManager.getBlockUser().empty())
+        const auto& blockedSet = blockManager.getBlockUser().at(currentId);
+        if (!blockedSet.empty())
         {
 
             cout << "enter the id want to unblocked him\n ";
@@ -793,7 +796,7 @@ void nextPage(int tempId)
             blockManager.unblockUserBy(currentId, ID);
             cin.ignore();
         }
-
+        
         cout << "Press Enter to return to menu...";
 
         cin.get();
