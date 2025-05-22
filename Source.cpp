@@ -65,7 +65,7 @@ bool isEmailUnique(const string& email) {
 }
 bool isUserNameUnique(const string& username) {
     for (const auto& u : users) {
-        if ( u.second.getName() == username) {
+        if (u.second.getName() == username) {
             return false;
         }
     }
@@ -80,7 +80,7 @@ User registerUser() {
     cout << "<--------------- Registration Page\n";
 
     // Get username
-   
+
     cout << "Enter your username: ";
     getline(cin, username);
     if (!isUserNameUnique(username))
@@ -185,60 +185,110 @@ bool loginUser() {
         }
 
         attempts++;
-        int id = 0;
         if (attempts < MAX_LOGIN_ATTEMPTS) {
             typewriterEffect("Incorrect email or password. Attempts remaining: " +
                 to_string(MAX_LOGIN_ATTEMPTS - attempts), COLOR_ERROR);
-            cout << "do you wnat change password ( y / n )" << endl;
-            char x;cin >> x;
+
+            cout << "Do you want to change password? (y/n): ";
+            char x;
+            cin >> x;
+            cin.ignore(); // Clear the input buffer
             x = toupper(x);
-            if (x == 'Y')
-            {
 
-                while (true) {
-
-                    for (auto user1 : users)
-                    {
-                        User U = user1.second;
-                        if (U.getAccount().first == email)
-                            id = user1.first;
-                    }
-                    cout << "wait second until sending Messsage " << endl;
-                    int ke = rand() % 6;
-                    string msg = to_string(ke);
-                    string command = "python PythonApplication2.py \"" + msg + "\"";
-
-                    int status = system(command.c_str());
-
-                    cout << "Command executed with status: " << status << endl;
-                    cout << "enter the key" << endl;
-                    string temp;cin >> temp;
-                    int xtemp = stoi(temp);
-                    if (xtemp == ke)
-                    {
-                        users[id].changePassword();
-                    }
-                    else
-                    {
-                        cout << "the key is invalid . do you want enter the key again ( y / n)" << endl;
-                        char r;
-                        r = toupper(x);
-                        if (r != 'y')
-                        {
-                            break;
-                        }
-
+            if (x == 'Y') {
+                int id = 0;
+                // Find user by email
+                for (const auto& user_pair : users) {
+                    if (user_pair.second.getAccount().first == email) {
+                        id = user_pair.first;
+                        break;
                     }
                 }
-            }
 
+                if (id == 0) {
+                    cout << "Email not found in registered users." << endl;
+                    continue;
+                }
+
+                cout << "Sending verification code to your email..." << endl;
+                int verification_code = rand() % 9000 + 1000; // 4-digit code
+                string msg = to_string(verification_code);
+                string command = "python PythonApplication2.py \"" + msg + "\"";
+
+                int status = system(command.c_str());
+                if (status != 0) {
+                    cout << "Failed to send verification code. Please try again later." << endl;
+                    continue;
+                }
+
+                int attempts_code = 0;
+                const int MAX_CODE_ATTEMPTS = 3;
+                bool code_verified = false;
+
+                while (attempts_code < MAX_CODE_ATTEMPTS) {
+                    cout << "Enter the verification code ("
+                        << MAX_CODE_ATTEMPTS - attempts_code
+                        << " attempts remaining): ";
+                    string input_code;
+                    getline(cin, input_code);
+
+                    try {
+                        int entered_code = stoi(input_code);
+                        if (entered_code == verification_code) {
+                            code_verified = true;
+                            break;
+                        }
+                        else {
+                            cout << "Invalid code. Please try again." << endl;
+                        }
+                    }
+                    catch (...) {
+                        cout << "Invalid input. Please enter numbers only." << endl;
+                    }
+
+                    attempts_code++;
+                }
+
+                if (code_verified) {
+                    string new_password, confirm_password;
+                    while (true) {
+                        cout << "Enter new password: ";
+                        getline(cin, new_password);
+
+                        if (!isStrongPassword(new_password)) {
+                            cout << "Weak password. Must be at least 8 characters." << endl;
+                            continue;
+                        }
+
+                        cout << "Confirm new password: ";
+                        getline(cin, confirm_password);
+
+                        if (new_password != confirm_password) {
+                            cout << "Passwords don't match. Please try again." << endl;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    // Update password
+                    pair<string, string> new_account = users[id].getAccount();
+                    new_account.second = hashPassword(new_password);
+                    users[id].setAccount(new_account);
+
+                    cout << "Password changed successfully! Please login with your new password." << endl;
+                    return false; // Return to main menu to login again
+                }
+                else {
+                    cout << "Maximum verification attempts reached. Please try again later." << endl;
+                }
+            }
         }
     }
 
     typewriterEffect("Maximum login attempts reached.", COLOR_ERROR);
     return false;
-}
-// Menu functions
+}// Menu functions
 void showMainMenu() {
     clearScreen();
     cout << "\n===== Modified-Saraha =====\n";
@@ -353,7 +403,7 @@ void loadAllData() {
                     int count = stoi(countStr);
 
                     if (users.count(uid) && users.count(cid)) {
-                        
+
                         if (!contacts.contactExists(uid, cid)) {
                             contacts.addContact(uid, cid);
                         }
@@ -432,7 +482,7 @@ void loadAllData() {
         messageFile.close();
     }
 
-   
+
     // Load favorites
     ifstream favoritesFile("favorites.csv");
     if (favoritesFile) {
@@ -538,8 +588,8 @@ void saveAllData() {
         messageFile.close();
     }
 
-    
-   // Save favorites
+
+    // Save favorites
     ofstream favoritesFile("favorites.csv");
     if (favoritesFile) {
         favoritesFile << "UserID,SenderID,SenderUsername,ReceiverUsername,Content,Timestamp\n";
@@ -589,7 +639,7 @@ void nextPage(int tempId)
 {
     Sleep(100);
     system("cls");
-       
+
     User& currentUser = users[tempId];
     int ID;
     string choice;
@@ -611,22 +661,22 @@ void nextPage(int tempId)
     else if (choice == "2") {
 
         string receiverUsername, content;
-        int id=0;
+        int id = 0;
         cout << "Enter receiver's username: ";
         getline(cin, receiverUsername);
 
-            for (auto& pair : users)
-            {
-                string name = pair.second.getName();
-                if (name == receiverUsername)
-                    id = pair.second.getId();
-            }
-            if (blockManager.isBlocked(currentId,id )|| blockManager.isBlocked(id, currentId)){
-                cout << "this accout has been blocked\n";
-                cout << "Press Enter to return to menu...\n";
-                cin.get();
-                nextPage(tempId);
-            }
+        for (auto& pair : users)
+        {
+            string name = pair.second.getName();
+            if (name == receiverUsername)
+                id = pair.second.getId();
+        }
+        if (blockManager.isBlocked(currentId, id) || blockManager.isBlocked(id, currentId)) {
+            cout << "this accout has been blocked\n";
+            cout << "Press Enter to return to menu...\n";
+            cin.get();
+            nextPage(tempId);
+        }
         if (messages.is_username_regiter(receiverUsername, allUsers)) {
             cout << "Enter your message: ";
             getline(cin, content);
@@ -634,8 +684,8 @@ void nextPage(int tempId)
             string senderUsername = currentUser.getName();
             int senderid = currentUser.getId();
 
-           
-            messages.sendMessage(senderUsername, senderid, receiverUsername, content, messages.registeredUsernames, allUsers, contacts,blockManager);
+
+            messages.sendMessage(senderUsername, senderid, receiverUsername, content, messages.registeredUsernames, allUsers, contacts, blockManager);
         }
         else
         {
@@ -658,7 +708,7 @@ void nextPage(int tempId)
 
     else if (choice == "4") {
         string senderUsername = currentUser.getName();
-       const vector<Message>& allSent = messages.getSentMessages();
+        const vector<Message>& allSent = messages.getSentMessages();
         vector< Message> userSentMsgs;
 
         cout << "\nYour sent messages:\n";
@@ -696,7 +746,7 @@ void nextPage(int tempId)
 
     else if (choice == "5") {
         string currentUsername = currentUser.getName();
-        
+
         auto it = messages.getReceivedMessages().find(currentUsername);
 
         if (it != messages.getReceivedMessages().end() && !it->second.empty()) {
@@ -765,7 +815,7 @@ void nextPage(int tempId)
         auto it = contacts.getContacts().find(currentId);
         if (it == contacts.getContacts().end() || it->second.empty()) {
             cout << "No contacts found for this user. Nothing to remove." << endl;
-           
+
         }
         else
         {
@@ -774,7 +824,7 @@ void nextPage(int tempId)
             cin >> ID;
             contacts.removeContact(currentId, ID);
             cin.ignore();
-        }       
+        }
         cout << "Press Enter to return to menu...";
 
         cin.get();
@@ -824,7 +874,7 @@ void nextPage(int tempId)
         else
 
         {
-            blockManager.blockUserBy(currentId, ID);            
+            blockManager.blockUserBy(currentId, ID);
 
         }
 
@@ -845,7 +895,7 @@ void nextPage(int tempId)
             blockManager.unblockUserBy(currentId, ID);
             cin.ignore();
         }
-        
+
         cout << "Press Enter to return to menu...";
 
         cin.get();
@@ -870,8 +920,8 @@ void nextPage(int tempId)
             else {
                 cout << "Invalid choice. Please enter 1 or 2.\n";
             }
-        } while (choice!="1"&& choice!="2");
-       
+        } while (choice != "1" && choice != "2");
+
         cout << "Press Enter to return to menu...";
         cin.get();
         nextPage(tempId);
@@ -895,21 +945,7 @@ void nextPage(int tempId)
 // Main function
 int main() {
     // Load existing data
-    string msg = "bbhbjjbk yousef C++";
-    string command = "python PythonApplication2.py \"" + msg + "\"";
-
-    int status = system(command.c_str());
-
-    cout << "Command executed with status: " << status << endl;
-
-    //////change the content of message
-
-    msg = "12314";
-    int x = stoi(msg);
-    command = "python PythonApplication2.py \"" + msg + "\"";
-    status = system(command.c_str());
-
-    cout << "Command executed with status: " << status << endl;
+    
 
     loadAllData();
 
@@ -925,8 +961,8 @@ int main() {
             nextPage(currentId);
         }
         else if (choice == "2") {
-            if (loginUser()) {                
-               nextPage(currentId);
+            if (loginUser()) {
+                nextPage(currentId);
             }
         }
         else if (choice == "3") {
