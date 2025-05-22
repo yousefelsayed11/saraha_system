@@ -20,6 +20,8 @@
 #include <limits>
 #include "Contacts.h"
 #include "BlockManager.h"
+#include <cstdlib>
+
 using namespace std;
 // Constants
 const int COLOR_SUCCESS = 10;
@@ -183,9 +185,53 @@ bool loginUser() {
         }
 
         attempts++;
+        int id = 0;
         if (attempts < MAX_LOGIN_ATTEMPTS) {
             typewriterEffect("Incorrect email or password. Attempts remaining: " +
                 to_string(MAX_LOGIN_ATTEMPTS - attempts), COLOR_ERROR);
+            cout << "do you wnat change password ( y / n )" << endl;
+            char x;cin >> x;
+            x = toupper(x);
+            if (x == 'Y')
+            {
+
+                while (true) {
+
+                    for (auto user1 : users)
+                    {
+                        User U = user1.second;
+                        if (U.getAccount().first == email)
+                            id = user1.first;
+                    }
+                    cout << "wait second until sending Messsage " << endl;
+                    int ke = rand() % 6;
+                    string msg = to_string(ke);
+                    string command = "python PythonApplication2.py \"" + msg + "\"";
+
+                    int status = system(command.c_str());
+
+                    cout << "Command executed with status: " << status << endl;
+                    cout << "enter the key" << endl;
+                    string temp;cin >> temp;
+                    int xtemp = stoi(temp);
+                    if (xtemp == ke)
+                    {
+                        users[id].changePassword();
+                    }
+                    else
+                    {
+                        cout << "the key is invalid . do you want enter the key again ( y / n)" << endl;
+                        char r;
+                        r = toupper(x);
+                        if (r != 'y')
+                        {
+                            break;
+                        }
+
+                    }
+                }
+            }
+
         }
     }
 
@@ -849,6 +895,22 @@ void nextPage(int tempId)
 // Main function
 int main() {
     // Load existing data
+    string msg = "bbhbjjbk yousef C++";
+    string command = "python PythonApplication2.py \"" + msg + "\"";
+
+    int status = system(command.c_str());
+
+    cout << "Command executed with status: " << status << endl;
+
+    //////change the content of message
+
+    msg = "12314";
+    int x = stoi(msg);
+    command = "python PythonApplication2.py \"" + msg + "\"";
+    status = system(command.c_str());
+
+    cout << "Command executed with status: " << status << endl;
+
     loadAllData();
 
     // Main loop

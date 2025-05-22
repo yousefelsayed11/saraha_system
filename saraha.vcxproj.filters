@@ -66,5 +66,6 @@
     <None Include="contacts.csv" />
     <None Include="blocked_users.csv" />
     <None Include="favorites.csv" />
+    <None Include="PythonApplication2.py" />
   </ItemGroup>
 </Project>
