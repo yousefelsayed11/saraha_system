@@ -44,6 +44,6 @@ void Contacts::setContacts(const unordered_map<int, unordered_map<int, int>>& ne
     contacts = newContacts;
 }
 
-const unordered_map<int, unordered_map<int, int>>& Contacts::getContacts() const {
+ unordered_map<int, unordered_map<int, int>>& Contacts::getContacts()  {
     return contacts;
 }

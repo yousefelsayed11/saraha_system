@@ -9,14 +9,22 @@ using namespace std;
 void Messages::sendMessage(string& senderUsername,int senderid, string& receiverUsername, string& content, vector<string>& registeredUsernames, vector<User*>& allUsers, Contacts& contacts, BlockManager& blockManager) {
   
     for (User* u : allUsers) {
- 
         if (u->getName() == receiverUsername) {
-            contacts.addContact(u->getId(), senderid);
-            contacts.getContacts()[u->getId()][senderid]++;
+            int receiverId = u->getId();
+
+           
+            if (!contacts.contactExists(receiverId, senderid)) {
+                contacts.addContact(receiverId, senderid);
+            }
+
+           
+            contacts.getContacts()[receiverId][senderid]++;
+
             cout << "Added message for : " << senderUsername << endl;
             break;
         }
     }
+
 
     Message msg(senderUsername, senderid,receiverUsername, content);
     sentMessages.push_back(msg);

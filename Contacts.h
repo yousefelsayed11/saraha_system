@@ -17,5 +17,5 @@ public:
     bool contactExists(int userID, int contactID);
 
     void setContacts(const unordered_map<int, unordered_map<int, int>>& newContacts);
-    const unordered_map<int, unordered_map<int, int>>& getContacts() const;
+     unordered_map<int, unordered_map<int, int>>& getContacts() ;
 };

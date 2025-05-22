@@ -6,13 +6,11 @@ bool BlockManager::isBlocked(int ownerID, int targetID) {
 }
 
 void BlockManager::blockUserBy(int ownerID, int targetID) {
-    if (!isBlocked(ownerID, targetID)) {
-        blockUser[ownerID].insert(targetID);
-        cout << "User " << ownerID << " has blocked user " << targetID << ".\n";
-    }
-    else {
+    if (isBlocked(ownerID, targetID)) {
+       
         cout << "User " << targetID << " is already blocked by user " << ownerID << ".\n";
     }
+    blockUser[ownerID].insert(targetID);
 }
 
 void BlockManager::unblockUserBy(int ownerID, int targetID) {

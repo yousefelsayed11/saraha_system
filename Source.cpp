@@ -452,7 +452,8 @@ void saveAllData() {
         contactFile << "UserID,ContactID,MessageCount\n";
         for (const auto& pair : contacts.getContacts()) {
             int userID = pair.first;
-            const map<int, int>& contactMap = pair.second;
+            const unordered_map<int, int>& contactMap = pair.second;
+
             for (const auto& contactPair : contactMap) {
                 int contactID = contactPair.first;
                 int msgCount = contactPair.second;
@@ -461,6 +462,7 @@ void saveAllData() {
             }
         }
         contactFile.close();
+
     }
 
 
