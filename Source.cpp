@@ -189,7 +189,7 @@ bool loginUser() {
         if (attempts < MAX_LOGIN_ATTEMPTS) {
             typewriterEffect("Incorrect email or password. Attempts remaining: " +
                 to_string(MAX_LOGIN_ATTEMPTS - attempts), COLOR_ERROR);
-            cout << "do you wnat change password ( y / n )" << endl;
+            /*cout << "do you wnat change password ( y / n )" << endl;
             char x;cin >> x;
             x = toupper(x);
             if (x == 'Y')
@@ -230,7 +230,7 @@ bool loginUser() {
 
                     }
                 }
-            }
+            }*/
 
         }
     }
@@ -895,21 +895,21 @@ void nextPage(int tempId)
 // Main function
 int main() {
     // Load existing data
-    string msg = "bbhbjjbk yousef C++";
-    string command = "python PythonApplication2.py \"" + msg + "\"";
+    //string msg = "bbhbjjbk yousef C++";
+    //string command = "python PythonApplication2.py \"" + msg + "\"";
 
-    int status = system(command.c_str());
+    //int status = system(command.c_str());
 
-    cout << "Command executed with status: " << status << endl;
+    //cout << "Command executed with status: " << status << endl;
 
-    //////change the content of message
+    ////////change the content of message
 
-    msg = "12314";
-    int x = stoi(msg);
-    command = "python PythonApplication2.py \"" + msg + "\"";
-    status = system(command.c_str());
+    //msg = "12314";
+    //int x = stoi(msg);
+    //command = "python PythonApplication2.py \"" + msg + "\"";
+    //status = system(command.c_str());
 
-    cout << "Command executed with status: " << status << endl;
+    //cout << "Command executed with status: " << status << endl;
 
     loadAllData();
 

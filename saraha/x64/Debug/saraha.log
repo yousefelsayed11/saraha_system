@@ -1,7 +1,1 @@
-﻿  Messages.cpp
-  Source.cpp
-  User.cpp
-D:\saraha_system\User.cpp(158,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\saraha_system\User.cpp(162,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
-  saraha.vcxproj -> D:\saraha_system\x64\Debug\saraha.exe
+﻿  saraha.vcxproj -> D:\saraha_system\x64\Debug\saraha.exe

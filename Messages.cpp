@@ -37,13 +37,12 @@ bool Messages::undoLastSentMessage(const string& currentUsername) {
     stack<Message> tempStack;
     bool found = false;
 
-    // Search for the most recent message by current user
     while (!undoStack.empty()) {
         Message last = undoStack.top();
         undoStack.pop();
 
-        if (last.getSenderUsername() == currentUsername && !found) {
-            // Remove from sentMessages
+        if (last.getSenderUsername() == currentUsername ) {
+           
             for (auto it = sentMessages.rbegin(); it != sentMessages.rend(); ++it) {
                 if (it->getSenderUsername() == last.getSenderUsername() &&
                     it->getReceiverUsername() == last.getReceiverUsername() &&
@@ -54,7 +53,7 @@ bool Messages::undoLastSentMessage(const string& currentUsername) {
                 }
             }
 
-            // Remove from receivedMessages
+        
             auto& msgs = receivedMessages[last.getReceiverUsername()];
             for (auto it = msgs.rbegin(); it != msgs.rend(); ++it) {
                 if (it->getSenderUsername() == last.getSenderUsername() &&
@@ -70,11 +69,11 @@ bool Messages::undoLastSentMessage(const string& currentUsername) {
             break;
         }
         else {
-            tempStack.push(last); // store other users' messages temporarily
+            tempStack.push(last); 
         }
     }
 
-    // Restore the rest of the undo stack
+    
     while (!tempStack.empty()) {
         undoStack.push(tempStack.top());
         tempStack.pop();
