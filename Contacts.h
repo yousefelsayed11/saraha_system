@@ -8,7 +8,7 @@ using namespace std;
 
 class Contacts {
 private:
-    unordered_map<int, map<int, int>> contacts;  // userID -> {contactID -> messageCount}
+    unordered_map<int, unordered_map<int, int>> contacts;  // userID -> {contactID -> messageCount}
 
 public:
     void addContact(int userID, int contactID);
@@ -16,6 +16,6 @@ public:
     void view_contact(int userID) const;
     bool contactExists(int userID, int contactID);
 
-    void setContacts(unordered_map<int, map<int, int>> newContacts);
-    unordered_map<int, map<int, int>>& getContacts();
+    void setContacts(const unordered_map<int, unordered_map<int, int>>& newContacts);
+    const unordered_map<int, unordered_map<int, int>>& getContacts() const;
 };

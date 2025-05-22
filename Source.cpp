@@ -516,23 +516,24 @@ void saveAllData() {
 // Helper function to escape CSV special characters
 void showUserMenu() {
     clearScreen();
-    cout << "\n===== User Menu =====\n";
-    cout << "1. Profile\n";
-    cout << "2. Send Message\n";
-    cout << "3. Undo Last Sent Message\n";
-    cout << "4. View Sent Messages\n";
-    cout << "5. View All Received Messages\n";
-    cout << "6. View Received Messages From Specific Contact\n";
-    cout << "7. Remove Oldest Favorite Message\n";
-    cout << "8. View Favorite Messages\n";
-    cout << "9. Remove Contacts\n";
-    cout << "10. Search Contacts\n";
-    cout << "11. View Contacts List\n";
-    cout << "12. Block User\n";
-    cout << "13. Unblock User\n";
-    cout << "14. View Blocked Users List\n";
-    cout << "15. Log Out\n";
-    cout << "===========================\n";
+    cout << "\n=========== User Menu ===========\n";
+    cout << " 1.  View Profile\n";
+    cout << " 2.  Send a Message\n";
+    cout << " 3.  Undo Last Sent Message\n";
+    cout << " 4.  View Sent Messages\n";
+    cout << " 5.  View All Received Messages\n";
+    cout << " 6.  View Messages from a Specific Contact\n";
+    cout << " 7.  Remove Oldest Favorite Message\n";
+    cout << " 8.  View Favorite Messages\n";
+    cout << " 9.  Remove a Contact\n";
+    cout << "10.  Search for a Contact\n";
+    cout << "11.  View Contacts List\n";
+    cout << "12.  Block a User\n";
+    cout << "13.  Unblock a User\n";
+    cout << "14.  View Blocked Users List\n";
+    cout << "15.  Log Out\n";
+    cout << "=================================\n";
+    cout << "Enter your choice: ";
 }
 
 

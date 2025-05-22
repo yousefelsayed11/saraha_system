@@ -36,13 +36,12 @@ void BlockManager::viewBlockedUsers(int ownerID) {
     }
 }
 
-void BlockManager::viewUsersWhoBlocked(int targetID, const vector<User*>& allUsers)
-{
+void BlockManager::viewUsersWhoBlocked(int targetID, const vector<User*>& allUsers) {
     vector<int> usersWhoBlocked;
 
     for (const auto& entry : blockUser) {
         int ownerID = entry.first;
-        const set<int>& blocked = entry.second;
+        const unordered_set<int>& blocked = entry.second;
 
         if (blocked.find(targetID) != blocked.end()) {
             usersWhoBlocked.push_back(ownerID);
@@ -55,7 +54,6 @@ void BlockManager::viewUsersWhoBlocked(int targetID, const vector<User*>& allUse
     else {
         cout << "Users who blocked you:\n";
         for (int blockerID : usersWhoBlocked) {
-  
             string blockerName;
             for (const User* user : allUsers) {
                 if (user->getId() == blockerID) {
@@ -68,11 +66,10 @@ void BlockManager::viewUsersWhoBlocked(int targetID, const vector<User*>& allUse
     }
 }
 
-
-void BlockManager::setBlockUser(int ownerID, const set<int>& blockedSet) {
+void BlockManager::setBlockUser(int ownerID, const unordered_set<int>& blockedSet) {
     blockUser[ownerID] = blockedSet;
 }
 
-const unordered_map<int, set<int>>& BlockManager::getBlockUser() const {
+const unordered_map<int, unordered_set<int>>& BlockManager::getBlockUser() const {
     return blockUser;
 }

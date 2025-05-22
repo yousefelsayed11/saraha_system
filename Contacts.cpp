@@ -3,14 +3,11 @@
 
 void Contacts::addContact(int userID, int contactID) {
     if (!contactExists(userID, contactID)) {
-        contacts[userID][contactID] = 0; 
-        
+        contacts[userID][contactID] = 0;
     }
 }
 
 void Contacts::removeContact(int userID, int contactID) {
-   
- 
     if (contactExists(userID, contactID)) {
         contacts[userID].erase(contactID);
         cout << "Contact \"" << contactID << "\" removed from User " << userID << ".\n";
@@ -36,21 +33,17 @@ void Contacts::view_contact(int userID) const {
     for (const auto& pair : sortedContacts) {
         cout << "Contact ID: " << pair.first << "  Messages: " << pair.second << endl;
     }
-
 }
 
 bool Contacts::contactExists(int userID, int contactID) {
     auto it = contacts.find(userID);
-    if (it != contacts.end()) {
-        return it->second.count(contactID) > 0;
-    }
-    return false;
+    return it != contacts.end() && it->second.count(contactID) > 0;
 }
 
-void Contacts::setContacts(unordered_map<int, map<int, int>> newContacts) {
-    contacts = move(newContacts);
+void Contacts::setContacts(const unordered_map<int, unordered_map<int, int>>& newContacts) {
+    contacts = newContacts;
 }
 
-unordered_map<int, map<int, int>>& Contacts::getContacts() {
+const unordered_map<int, unordered_map<int, int>>& Contacts::getContacts() const {
     return contacts;
 }
